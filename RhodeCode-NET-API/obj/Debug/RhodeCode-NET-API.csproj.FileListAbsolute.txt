@@ -1,0 +1,8 @@
+C:\Users\bjones\Dropbox\Visual Studio\Projects\RhodeCode-NET-API\RhodeCode-NET-API\obj\Debug\RhodeCode-NET-API.csprojResolveAssemblyReference.cache
+C:\Users\bjones\Dropbox\Visual Studio\Projects\RhodeCode-NET-API\RhodeCode-NET-API\bin\Debug\RhodeCode-NET-API.dll
+C:\Users\bjones\Dropbox\Visual Studio\Projects\RhodeCode-NET-API\RhodeCode-NET-API\bin\Debug\RhodeCode-NET-API.pdb
+C:\Users\bjones\Dropbox\Visual Studio\Projects\RhodeCode-NET-API\RhodeCode-NET-API\obj\Debug\RhodeCode-NET-API.dll
+C:\Users\bjones\Dropbox\Visual Studio\Projects\RhodeCode-NET-API\RhodeCode-NET-API\obj\Debug\RhodeCode-NET-API.pdb
+C:\Users\bjones\Dropbox\Visual Studio\Projects\RhodeCode-NET-API\RhodeCode-NET-API\bin\Debug\Newtonsoft.Json.dll
+C:\Users\bjones\Dropbox\Visual Studio\Projects\RhodeCode-NET-API\RhodeCode-NET-API\bin\Debug\Newtonsoft.Json.pdb
+C:\Users\bjones\Dropbox\Visual Studio\Projects\RhodeCode-NET-API\RhodeCode-NET-API\bin\Debug\Newtonsoft.Json.xml
