@@ -23,29 +23,15 @@ namespace RhodeCode_NET_API
         }
 
         /// <summary>
-        /// Pulls given repo from remote location. 
-        /// Can be used to automatically keep remote repos up to date. 
-        /// This command can be executed only using api_key belonging to user with admin rights
+        /// This function is used to send teh API_Request and return the API_Response.
         /// </summary>
-        /// 
-        /// <param name="repo">reponame or repo_id.</param>
-        /// <returns>API_Response containing results of operation.</returns>
-        public API_Response pull(string repo)
+        /// <param name="request"></param>
+        /// <returns></returns>
+        private API_Response API_Call(API_Request request)
         {
-            // Create a random ID.
+            // Create and set Request ID.
             Random rand = new Random();
-            int id = rand.Next(1,1000);
-
-            // Build the arguments
-            pull_args args;
-            args.repoid = repo;
-
-            // Create the request.
-            API_Request request = new API_Request();
-            request.id = id;
-            request.method = "pull";
-            request.api_key = api_key;
-            request.args = args;
+            request.id = rand.Next(1, 1000);
 
             // Serialize to JSON.
             string json_request = JsonConvert.SerializeObject(request);
@@ -56,8 +42,32 @@ namespace RhodeCode_NET_API
             // Send the request, store response.
             string json_response = Request.HttpPost(host, json_request);
 
-            // Marshal the response and return it.
+            // Deserialize the response and return it.
             return JsonConvert.DeserializeObject<API_Response>(json_response);
+        }
+
+        /// <summary>
+        /// Pulls given repo from remote location. 
+        /// Can be used to automatically keep remote repos up to date. 
+        /// This command can be executed only using api_key belonging to user with admin rights
+        /// </summary>
+        /// 
+        /// <param name="repo">reponame or repo_id.</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response pull(string repo)
+        {
+            // Build the arguments
+            pull_args args;
+            args.repoid = repo;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "pull";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
         }
 
         /// <summary>
@@ -70,32 +80,18 @@ namespace RhodeCode_NET_API
         /// <returns>API_Response containing results of operation.</returns>
         public API_Response rescan_repos(bool remove_obselete)
         {
-            // Create a random ID.
-            Random rand = new Random();
-            int id = rand.Next(1,1000);
-
             // Build the arguments
             rescan_args args;
             args.remove_obselete = remove_obselete;
 
             // Create the request.
             API_Request request = new API_Request();
-            request.id = id;
             request.method = "rescan_repos";
             request.api_key = api_key;
             request.args = args;
 
-            // Serialize to JSON.
-            string json_request = JsonConvert.SerializeObject(request);
-
-            // Need to clean up the args a bit.
-            json_request = json_request.Replace("\\\"", "\"").Replace("\"args\":\"", "\"args\":").Replace("}\"}", "}}");
-
-            // Send the request, store response.
-            string json_response = Request.HttpPost(host, json_request);
-
-            // Marshal the response and return it.
-            return JsonConvert.DeserializeObject<API_Response>(json_response);
+            // Send the request and return response.
+            return API_Call(request);
         }
 
         /// <summary>
@@ -107,32 +103,18 @@ namespace RhodeCode_NET_API
         /// <returns>API_Response containing results of operation.</returns>
         public API_Response invalidate_cache(string repo)
         {
-            // Create a random ID.
-            Random rand = new Random();
-            int id = rand.Next(1, 1000);
-
             // Build the arguments
             invalidate_args args;
             args.repoid = repo;
 
             // Create the request.
             API_Request request = new API_Request();
-            request.id = id;
             request.method = "invalidate_cache";
             request.api_key = api_key;
             request.args = args;
 
-            // Serialize to JSON.
-            string json_request = JsonConvert.SerializeObject(request);
-
-            // Need to clean up the args a bit.
-            json_request = json_request.Replace("\\\"", "\"").Replace("\"args\":\"", "\"args\":").Replace("}\"}", "}}");
-
-            // Send the request, store response.
-            string json_response = Request.HttpPost(host, json_request);
-
-            // Marshal the response and return it.
-            return JsonConvert.DeserializeObject<API_Response>(json_response);
+            // Send the request and return response.
+            return API_Call(request);
         }
 
         /// <summary>
@@ -148,10 +130,6 @@ namespace RhodeCode_NET_API
         /// <returns>API_Response containing results of operation.</returns>
         public API_Response lock_repo(string repo, string user, bool locked)
         {
-            // Create a random ID.
-            Random rand = new Random();
-            int id = rand.Next(1, 1000);
-
             // Build the arguments
             lock_args args;
             args.repoid = repo;
@@ -160,35 +138,81 @@ namespace RhodeCode_NET_API
 
             // Create the request.
             API_Request request = new API_Request();
-            request.id = id;
             request.method = "lock";
             request.api_key = api_key;
             request.args = args;
 
-            // Serialize to JSON.
-            string json_request = JsonConvert.SerializeObject(request);
+            // Send the request and return response.
+            return API_Call(request);
+        }
 
-            // Need to clean up the args a bit.
-            json_request = json_request.Replace("\\\"", "\"").Replace("\"args\":\"", "\"args\":").Replace("}\"}", "}}");
+        /// <summary>
+        /// Shows IP address as seen from RhodeCode server, together with all defined IP addresses 
+        /// for given user. This command can be executed only using api_key belonging to user with admin rights.
+        /// </summary>
+        /// 
+        /// <param name="user">username or user_id.</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response show_ip(string user)
+        {
+            // Build the arguments
+            show_ip_args args;
+            args.userid = user;
 
-            // Send the request, store response.
-            string json_response = Request.HttpPost(host, json_request);
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "show_ip";
+            request.api_key = api_key;
+            request.args = args;
 
-            // Marshal the response and return it.
-            return JsonConvert.DeserializeObject<API_Response>(json_response);
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
+        /// Get’s an user by username or user_id, Returns empty result if user is not found. 
+        /// If userid param is skipped it is set to id of user who is calling this method. 
+        /// This command can be executed only using api_key belonging to user with admin rights, 
+        /// or regular users that cannot specify different userid than theirs.
+        /// </summary>
+        /// 
+        /// <param name="user">username or user_id.</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response get_user(string user)
+        {
+            // Build the arguments
+            get_user_args args;
+            args.userid = user;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "get_user";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
+        /// Lists all existing users. This command can be executed only 
+        /// using api_key belonging to user with admin rights.
+        /// </summary>
+        /// 
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response get_users()
+        {
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "get_users";
+            request.api_key = api_key;
+
+            // Send the request and return response.
+            return API_Call(request);
         }
 
 
-
-
-        //
-        // All API call methods should exist here.
-
         /*
-        lock
-        show_ip
-        get_user
-        get_users
         create_user
         update_user
         delete_user
@@ -209,34 +233,4 @@ namespace RhodeCode_NET_API
         revoke_users_group_permission
         */
     }
-
-    /// <summary>
-    /// Contains the data structure for using an API call in RhodeCode.
-    /// </summary>
-    public class API_Request
-    {
-        public int id;              // Required
-        public string api_key;      // Required
-        public string method;       // Required
-        public object args;         // Required
-    }
-
-    /// <summary>
-    /// This class contains the data structure for the response of an API call in RhodeCode.
-    /// </summary>
-    public class API_Response
-    {
-        public int id;
-        public object result;
-        public string error;
-    }
-
-    /**
-     * Arguments for the API calls.
-     */
-    struct pull_args { public string repoid; }
-    struct rescan_args { public bool remove_obselete; }
-    struct invalidate_args { public string repoid; }
-    struct lock_args { public string repoid; public string userid; public bool locked; }
-
 }

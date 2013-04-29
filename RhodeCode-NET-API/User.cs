@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Text;
 
@@ -21,7 +22,7 @@ namespace RhodeCode_NET_API
         public string firstname;
         public string lastname;
         public string email;
-        public string emails;
+        public string[] emails;
         public bool active;
         public bool admin;
         public string ldap_dn;
@@ -36,17 +37,19 @@ namespace RhodeCode_NET_API
      */
     public class User_Extended : User
     {
-        public string ip_addresses;
+        public string[] ip_addresses;
     }
 
     /**
      * Subclass of User_Extended.
-     * This class also holds the permissions for a user.
+     * This class also holds the permissions for a user 
+     * and their associated api key.
      * 
      * get_users
      */
     public class User_Full : User_Extended
     {
+        public string api_key;
         public User_Permission permissions;
     }
 
@@ -92,8 +95,8 @@ namespace RhodeCode_NET_API
      */
     public class User_Permission
     {
-        public string global;
-        public KeyValuePair<string,string> repositories;
-        public KeyValuePair<string,string> repositories_groups;
+        public string[] global;
+        public Dictionary<string, string> repositories;
+        public Dictionary<string, string> repositories_groups;
     }
 }
