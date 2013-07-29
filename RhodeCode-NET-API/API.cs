@@ -25,10 +25,6 @@ namespace RhodeCode_NET_API
         public object result;
         public string error;
 
-        /// <summary>
-        /// Use this function to return the appropriate data type for the pull API call.
-        /// </summary>
-        /// <returns>String representation of result.</returns>
         public string deserialize_pull()
         {
             if (result != null)
@@ -36,11 +32,7 @@ namespace RhodeCode_NET_API
             else
                 return "";
         }
-
-        /// <summary>
-        /// Use this function to return the appropriate data type for the rescan_repos API call.
-        /// </summary>
-        /// <returns>A rescan_repos_result struct containing the results.</returns>
+      
         public rescan_repos deserialize_rescan_repos()
         {
             if (result != null)
@@ -48,11 +40,7 @@ namespace RhodeCode_NET_API
             else
                 return new rescan_repos();
         }
-
-        /// <summary>
-        /// Use this function to return the appropriate data type for the invalidate_cache API call.
-        /// </summary>
-        /// <returns>String representation of result.</returns>
+        
         public string deserialize_invalidate_cache()
         {
             if (result != null)
@@ -60,23 +48,15 @@ namespace RhodeCode_NET_API
             else
                 return "";
         }
-
-        /// <summary>
-        /// Use this function to return the appropriate data type for the lock API call.
-        /// </summary>
-        /// <returns>String representation of result.</returns>
-        public string deserialize_lock()
+       
+        public lock_repo deserialize_lock()
         {
             if (result != null)
-                return result.ToString();
+                return JsonConvert.DeserializeObject<lock_repo>(result.ToString());
             else
-                return "";
+                return new lock_repo();
         }
-
-        /// <summary>
-        /// Use this function to return the appropriate data type for the show_ip API call.
-        /// </summary>
-        /// <returns>A show_ip data structure containing the result of the API call.</returns>
+       
         public show_ip deserialize_show_ip()
         {
             if (result != null)
@@ -84,11 +64,7 @@ namespace RhodeCode_NET_API
             else
                 return new show_ip();
         }
-
-        /// <summary>
-        /// Use this function to return the appropriate data type for the get_user API call.
-        /// </summary>
-        /// <returns>A User_Full object containing the result of the get_user API call.</returns>
+       
         public User_Full deserialize_get_user()
         {
             if (result != null)
@@ -96,31 +72,159 @@ namespace RhodeCode_NET_API
             else
                 return new User_Full();
         }
-
-        /// <summary>
-        /// Use this function to return the appropriate data type for the get_users API call.
-        /// </summary>
-        /// <returns>A User object array containing all users returned by the get_users API call.</returns>
-        public User[] deserialize_get_users()
+       
+        public User_Extended[] deserialize_get_users()
         {
             if (result != null)
-                return JsonConvert.DeserializeObject<User[]>(result.ToString());
+                return JsonConvert.DeserializeObject<User_Extended[]>(result.ToString());
             else
-                return new User[0];
+                return new User_Extended[0];
         }
-    
-    
-    }
+       
+        public user_message deserialize_create_user()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<user_message>(result.ToString());
+            else
+                return new user_message();
+        }
 
-    /**
-     * Arguments for the API calls.
-     */
-    struct pull_args { public string repoid; }
-    struct rescan_args { public bool remove_obselete; }
-    struct invalidate_args { public string repoid; }
-    struct lock_args { public string repoid; public string userid; public bool locked; }
-    struct show_ip_args { public string userid; }
-    struct get_user_args { public string userid; }
+        public user_update deserialize_update_user()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<user_update>(result.ToString());
+            else
+                return new user_update();
+        }
+
+        public user_message deserialize_delete_user()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<user_message>(result.ToString());
+            else
+                return new user_message();
+        }
+
+        public UserGroup_Full deserialize_get_users_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<UserGroup_Full>(result.ToString());
+            else
+                return new UserGroup_Full();
+        }
+
+        public UserGroup[] deserialize_get_users_groups()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<UserGroup[]>(result.ToString());
+            else
+                return new UserGroup[0];
+        }
+
+        public user_group_message deserialize_create_users_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<user_group_message>(result.ToString());
+            else
+                return new user_group_message();
+        }
+
+        public response deserialize_add_user_to_users_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
+
+        public response deserialize_remove_user_from_users_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
+
+        public Repository_Full deserialize_get_repo()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<Repository_Full>(result.ToString());
+            else
+                return new Repository_Full();
+        }
+
+        public Repository_Extended[] deserialize_get_repos()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<Repository_Extended[]>(result.ToString());
+            else
+                return new Repository_Extended[0];
+        }
+
+        public Repository_Node[] deserialize_get_repo_nodes()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<Repository_Node[]>(result.ToString());
+            else
+                return new Repository_Node[0];
+        }
+
+        public repository_message deserialize_create_repo()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<repository_message>(result.ToString());
+            else
+                return new repository_message();
+        }
+
+        public response deserialize_fork_repo()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
+
+        public response deserialize_delete_repo()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
+
+        public response deserialize_grant_user_permission()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
+
+        public response deserialize_revoke_user_permission()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
+
+        public response deserialize_grant_users_group_permission()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
+
+        public response deserialize_revoke_users_group_permission()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
+    }
 
     /**
      * Used for deserialization.
@@ -130,16 +234,48 @@ namespace RhodeCode_NET_API
         public string[] added;
         public string[] removed;
     }
-
+    public struct lock_repo
+    {
+        public string repo;
+        public bool locked;
+        public float? locked_since;
+        public string locked_by;
+        public string msg;
+    }
     public struct user_ip
     {
         public string ip_addr;
         public string[] ip_range;
     }
-
     public struct show_ip
     {
         public string ip_addr_server;
         public user_ip[] user_ips;
     }
+    public struct user_message
+    {
+        public string msg;
+        public User user;
+    }
+    public struct user_update
+    {
+        public string msg;
+        public User_Extended user;
+    }
+    public struct user_group_message
+    {
+        public string msg;
+        public UserGroup users_group;
+    }
+    public struct response
+    {
+        public bool success;
+        public string msg;
+    }
+    public struct repository_message 
+    {
+        public string msg; 
+        public Repository_Extended repo; 
+    }
+
 }

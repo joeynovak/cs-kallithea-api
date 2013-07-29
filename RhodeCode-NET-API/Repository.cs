@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.Text;
 
+/**
+ * This class contains all the request and response
+ * data structures for Repository related calls. 
+ */
 namespace RhodeCode_NET_API
 {
-    /**
-     * This class contains all the request and response
-     * data structures for Repository related calls. 
-     */
-
-    /**
-     * Used in: create_repo
-     */
+    /// <summary>
+    /// Data structure used by:
+    /// 
+    /// create_repo.
+    /// </summary>
     public class Repository
     {
         public string repo_name;                   // Required.
-        public string owner;                       // Required.
+        public string owner = "_apiuser_";         // Optional. (_apiuser_)
         public string repo_type = "hg";            // Optional. (hg)
         public string description = "";            // Optional. ("")
         public bool @private = false;              // Optional. (false)
@@ -26,37 +27,85 @@ namespace RhodeCode_NET_API
         public bool enable_statistics = false;     // Optional. (false)
     }
 
-    /**
-     * Used to store information for create_repo response.  Marshalling.
-     */
-    class Repository_Response
+    /// <summary>
+    /// Data structure used by:
+    /// 
+    /// get_repos
+    /// </summary>
+    public class Repository_Extended : Repository
     {
         public int repo_id;
-        public string repo_name;
-        public string repo_type;
-        public string clone_uri;
-        public bool @private;
         public string created_on;
-        public string description;
-        public string landing_rev;
-        public string owner;
         public string fork_of;
-        public bool enable_downloads;
-        public bool enable_locking;
-        public bool enable_statistics;
     }
 
-    /**
-     * Used for repository responses.
-     * 
-     * List
-     * All
-     * Calls
-     * Here
-     */
-    class Repository_Result
+    /// <summary>
+    /// The contents of 'members' are either a 
+    /// Data structure used by:
+    /// 
+    /// get_repo
+    /// </summary>
+    public class Repository_Full : Repository_Extended
     {
-        public string msg;
-        public Repository_Response repo;
+        public Repository_Changeset last_changeset;
+        public Repository_Member[] members;
+        public User_Extended[] followers;        
     }
+
+    /// <summary>
+    /// Data structure used by:
+    /// 
+    /// get_repo
+    /// </summary>
+    public class Repository_Changeset
+    {
+        public string author;
+        public string date;
+        public string message;
+        public int raw_id;
+        public int revision;
+        public int short_id;
+    }
+
+    /// <summary>
+    /// Data structure used by:
+    /// 
+    /// get_repo_nodes
+    /// </summary>
+    public class Repository_Node
+    {
+        public string name;
+        public string type;
+    }
+
+    /// <summary>
+    /// Used to store either user or user_group member object.
+    /// Data structure used by:
+    /// 
+    /// get_repo
+    /// </summary>
+    public class Repository_Member
+    {
+        // Used by both types.
+        public string type;                    
+        public bool active;                    
+        public string permission;               
+
+        // Used by user type.
+        public int? user_id = null;            
+        public string api_key = null;         
+        public string username = null;          
+        public string firstname = null;
+        public string lastname = null;
+        public string email = null;
+        public string[] emails = null;
+        public string ldap_dn = null;
+        public string last_login = null;
+
+        // Used by user_group type.
+        public int? id = null;
+        public string name = null; 
+    }
+
+
 }

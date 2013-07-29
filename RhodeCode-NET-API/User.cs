@@ -9,15 +9,16 @@ using System.Text;
  */
 namespace RhodeCode_NET_API
 {
-    /**
-     * Holds information returned by a user request (response).
-     * 
-     * create_user
-     * update_user
-     */
+    /// <summary>
+    /// Data structure used by:
+    /// 
+    /// create_user
+    /// update_user
+    /// </summary>
     public class User
     {
         public int user_id;
+        public string api_key;
         public string username;
         public string firstname;
         public string lastname;
@@ -29,40 +30,36 @@ namespace RhodeCode_NET_API
         public string last_login;
     }
 
-    /**
-     * Subclass of User.
-     * This class also holds IP addresses for a user.
-     * 
-     * get_user
-     */
+    /// <summary>
+    /// Data structure used by:
+    /// 
+    /// get_user
+    /// </summary>
     public class User_Extended : User
     {
         public string[] ip_addresses;
     }
 
-    /**
-     * Subclass of User_Extended.
-     * This class also holds the permissions for a user 
-     * and their associated api key.
-     * 
-     * get_users
-     */
+    /// <summary>
+    /// Data structure used by:
+    /// 
+    /// get_users
+    /// </summary>
     public class User_Full : User_Extended
     {
-        public string api_key;
         public User_Permission permissions;
     }
 
-    /**
-     * Holds information used to initiate a a create_user request.
-     * 
-     * create_user
-     */
+    /// <summary>
+    /// Data structure used by:
+    ///
+    /// create_user
+    /// </summary>
     public class User_Create
     {
         public string username;         // Required
         public string email;            // Required
-        public string password;         // Required
+        public string password = "";    // Optional ("")
         public string firstname = "";   // Optional ("")
         public string lastname = "";    // Optional ("")
         public bool active = true;      // Optional (false)
@@ -70,29 +67,29 @@ namespace RhodeCode_NET_API
         public string ldap_dn = "";     // Optional ("")
     }
 
-    /**
-     * Holds information used to initiate an update_user request.
-     * 
-     * update_user
-     */
+    /// <summary>
+    /// Data structure used by:
+    ///
+    /// update_user
+    /// </summary>
     public class User_Update
     {
         public int userid;              // Required.
-        public string username;         // Optional (null)
-        public string email;            // Optional (null)
-        public string password;         // Optional (null)
-        public string firstname;        // Optional (null)
-        public string lastname;         // Optional (null)
-        public bool active;             // Optional (null)
-        public bool admin;              // Optional (null)
-        public string ldap_dn;          // Optional (null)
+        public string username = null;  // Optional (null)
+        public string email = null;     // Optional (null)
+        public string password = null;  // Optional (null)
+        public string firstname = null; // Optional (null)
+        public string lastname = null;  // Optional (null)
+        public bool? active = null;     // Optional (null)
+        public bool? admin = null;      // Optional (null)
+        public string ldap_dn = null;   // Optional (null)
     }
 
-    /**
-     * Used to store user permissions.
-     * 
-     * get_user
-     */
+    /// <summary>
+    /// Data structure used by:
+    ///
+    /// get_user
+    /// </summary>
     public class User_Permission
     {
         public string[] global;
