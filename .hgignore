@@ -1,0 +1,2 @@
+syntax: glob
+Test-Kallithea-NET-API/*
