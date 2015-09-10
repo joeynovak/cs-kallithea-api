@@ -150,12 +150,12 @@ namespace Kallithea_NET_API
                 return new Repository_Full();
         }
 
-        public Repository_Extended[] deserialize_get_repos()
+        public Repository_All[] deserialize_get_repos()
         {
             if (result != null)
-                return JsonConvert.DeserializeObject<Repository_Extended[]>(result.ToString());
+                return JsonConvert.DeserializeObject<Repository_All[]>(result.ToString());
             else
-                return new Repository_Extended[0];
+                return new Repository_All[0];
         }
 
         public Repository_Node[] deserialize_get_repo_nodes()
@@ -271,8 +271,8 @@ namespace Kallithea_NET_API
     }
     public struct repository_message 
     {
-        public string msg; 
-        public Repository_Extended repo; 
+        public string msg;
+        public Repository_All repo;
     }
 
 }
