@@ -1,22 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Newtonsoft.Json;
 
-namespace RhodeCode_NET_API
+namespace Kallithea_NET_API
 {
-    public class RhodeCode
+    public class Kallithea
     {
         private string host;
         private string api_key;
 
         /// <summary>
-        /// Used to connect and execute API calls to a RhodeCode server.
+        /// Used to connect and execute API calls to a Kallithea server.
         /// </summary>
         ///
         /// <param name="api_key">An API Key belonging to a user with admin privileges.</param>
-        /// <param name="host">The location of the RhodeCode server.  Include /_admin/api on the end.</param>
-        public RhodeCode(string host, string api_key)
+        /// <param name="host">The location of the Kallithea server.  Include /_admin/api on the end.</param>
+        public Kallithea(string host, string api_key)
         {
             this.host = host;
             this.api_key = api_key;
@@ -71,7 +69,7 @@ namespace RhodeCode_NET_API
         }
 
         /// <summary>
-        /// Dispatch rescan repositories action. If remove_obsolete is set RhodeCode will delete 
+        /// Dispatch rescan repositories action. If remove_obsolete is set Kallithea will delete 
         /// repos that are in database but not in the filesystem. This command can be executed 
         /// only using api_key belonging to user with admin rights.
         /// </summary>
@@ -147,21 +145,21 @@ namespace RhodeCode_NET_API
         }
 
         /// <summary>
-        /// Shows IP address as seen from RhodeCode server, together with all defined IP addresses 
+        /// Shows IP address as seen from Kallithea server, together with all defined IP addresses 
         /// for given user. This command can be executed only using api_key belonging to user with admin rights.
         /// </summary>
         /// 
         /// <param name="user">username or user_id.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response show_ip(string user)
+        public API_Response get_ip(string user)
         {
             // Build the arguments
-            show_ip_args args;
+            get_ip_args args;
             args.userid = user;
 
             // Create the request.
             API_Request request = new API_Request();
-            request.method = "show_ip";
+            request.method = "get_ip";
             request.api_key = api_key;
             request.args = args;
 
@@ -306,15 +304,15 @@ namespace RhodeCode_NET_API
         /// </summary>
         /// <param name="usergroup"></param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_users_group(string usergroup)
+        public API_Response get_user_group(string usergroup)
         {
             // Build the arguments
-            get_users_group_args args;
-            args.usersgroupid = usergroup;
+            get_user_group_args args;
+            args.usergroupid = usergroup;
 
             // Create the request.
             API_Request request = new API_Request();
-            request.method = "get_users_group";
+            request.method = "get_user_group";
             request.api_key = api_key;
             request.args = args;
 
@@ -328,11 +326,11 @@ namespace RhodeCode_NET_API
         /// to user with admin rights.
         /// </summary>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_users_groups()
+        public API_Response get_user_groups()
         {
             // Create the request.
             API_Request request = new API_Request();
-            request.method = "get_users_groups";
+            request.method = "get_user_groups";
             request.api_key = api_key;
 
             // Send the request and return response.
@@ -348,17 +346,17 @@ namespace RhodeCode_NET_API
         /// <param name="active">If the group is active.  Default(True)</param>
         /// <param name="owner">The owner of the group.  Default(=apiuser)</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response create_users_group(string group_name, string owner = "_apiuser_", bool active = true)
+        public API_Response create_user_group(string group_name, string owner = "_apiuser_", bool active = true)
         {
             // Build the arguments.
-            create_users_group_args args = new create_users_group_args();
+            create_user_group_args args = new create_user_group_args();
             args.group_name = group_name;
             args.active = active;
             args.owner = owner;
 
             // Create the request.
             API_Request request = new API_Request();
-            request.method = "create_users_group";
+            request.method = "create_user_group";
             request.api_key = api_key;
             request.args = args;
          
@@ -374,16 +372,16 @@ namespace RhodeCode_NET_API
         /// <param name="usergroup">user group id or name</param>
         /// <param name="user">user id or username</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response add_user_to_users_group(string usergroup, string user)
+        public API_Response add_user_to_user_group(string usergroup, string user)
         {
             // Build the arguments
-            edit_users_group_args args;
+            edit_user_group_args args;
             args.usersgroupid = usergroup;
             args.userid = user;
 
             // Create the request.
             API_Request request = new API_Request();
-            request.method = "add_user_to_users_group";
+            request.method = "add_user_to_user_group";
             request.api_key = api_key;
             request.args = args;
 
@@ -399,16 +397,16 @@ namespace RhodeCode_NET_API
         /// <param name="usergroup">user group id or name</param>
         /// <param name="user">user id or username</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response remove_user_from_users_group(string usergroup, string user)
+        public API_Response remove_user_from_user_group(string usergroup, string user)
         {
             // Build the arguments
-            edit_users_group_args args;
+            edit_user_group_args args;
             args.usersgroupid = usergroup;
             args.userid = user;
 
             // Create the request.
             API_Request request = new API_Request();
-            request.method = "remove_user_from_users_group";
+            request.method = "remove_user_from_user_group";
             request.api_key = api_key;
             request.args = args;
 
@@ -645,17 +643,17 @@ namespace RhodeCode_NET_API
         /// <param name="usergroup">The user group id or name.</param>
         /// <param name="perm">repository.(none|read|write|admin) permissions to grant.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response grant_users_group_permission(string repo, string usergroup, string perm)
+        public API_Response grant_user_group_permission(string repo, string usergroup, string perm)
         {
             // Build arguments.
-            grant_users_group_permission_args args;
+            grant_user_group_permission_args args;
             args.repoid = repo;
             args.usersgroupid = usergroup;
             args.perm = perm;
 
             // Create the request.
             API_Request request = new API_Request();
-            request.method = "grant_users_group_permission";
+            request.method = "grant_user_group_permission";
             request.api_key = api_key;
             request.args = args;
 
@@ -670,16 +668,16 @@ namespace RhodeCode_NET_API
         /// <param name="repo">The reponame or repo_id of the repository.</param>
         /// <param name="usergroup">The user group id or name.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response revoke_users_group_permission(string repo, string usergroup)
+        public API_Response revoke_user_group_permission(string repo, string usergroup)
         {
             // Build arguments.
-            revoke_users_group_permission_args args;
+            revoke_user_group_permission_args args;
             args.repoid = repo;
             args.usersgroupid = usergroup;
 
             // Create the request.
             API_Request request = new API_Request();
-            request.method = "revoke_users_group_permission";
+            request.method = "revoke_user_group_permission";
             request.api_key = api_key;
             request.args = args;
 
@@ -707,7 +705,7 @@ namespace RhodeCode_NET_API
             public bool ShouldSerializelocked() { return locked != null; }
         }
        
-        private struct show_ip_args { public string userid; }
+        private struct get_ip_args { public string userid; }
         
         private struct get_user_args { public string userid; }
         
@@ -748,10 +746,10 @@ namespace RhodeCode_NET_API
 
         private struct delete_user_args { public string userid; }
         
-        private struct get_users_group_args { public string usersgroupid; }
+        private struct get_user_group_args { public string usergroupid; }
        
         // Conditional Serialization
-        private struct create_users_group_args 
+        private struct create_user_group_args 
         { 
             public string group_name; 
             public string owner; 
@@ -761,7 +759,7 @@ namespace RhodeCode_NET_API
             public bool ShouldSerializeactive() { return active != null; }
         }
        
-        private struct edit_users_group_args { public string usersgroupid; public string userid; }
+        private struct edit_user_group_args { public string usersgroupid; public string userid; }
        
         private struct get_repo_args { public string repoid; }
        
@@ -811,8 +809,8 @@ namespace RhodeCode_NET_API
 
         private struct revoke_user_permission_args { public string repoid; public string userid; }
 
-        private struct grant_users_group_permission_args { public string repoid; public string usersgroupid; public string perm; }
+        private struct grant_user_group_permission_args { public string repoid; public string usersgroupid; public string perm; }
 
-        private struct revoke_users_group_permission_args { public string repoid; public string usersgroupid; }
+        private struct revoke_user_group_permission_args { public string repoid; public string usersgroupid; }
     }
 }

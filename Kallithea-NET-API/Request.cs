@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Net;
-using Newtonsoft.Json;
 
-namespace RhodeCode_NET_API
+namespace Kallithea_NET_API
 {
     /**
      * This class handles the JSON requests and responses 
-     * sent to and from the RhodeCode server.
+     * sent to and from the Kallithea server.
      */
     public class Request
     {

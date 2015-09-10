@@ -1,13 +1,10 @@
-﻿using System;
-using System.Data;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 /**
  * This class contains all the request and response
  * data structures for User related calls. 
  */
-namespace RhodeCode_NET_API
+namespace Kallithea_NET_API
 {
     /// <summary>
     /// Data structure used by:

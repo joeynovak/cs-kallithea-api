@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
-namespace RhodeCode_NET_API
+namespace Kallithea_NET_API
 {
     /// <summary>
-    /// Contains the data structure for using an API call in RhodeCode.
+    /// Contains the data structure for using an API call in Kallithea.
     /// </summary>
     public class API_Request
     {
@@ -17,7 +14,7 @@ namespace RhodeCode_NET_API
     }
 
     /// <summary>
-    /// This class contains the data structure for the response of an API call in RhodeCode.
+    /// This class contains the data structure for the response of an API call in Kallithea.
     /// </summary>
     public class API_Response
     {
@@ -57,12 +54,12 @@ namespace RhodeCode_NET_API
                 return new lock_repo();
         }
        
-        public show_ip deserialize_show_ip()
+        public get_ip deserialize_get_ip()
         {
             if (result != null)
-                return JsonConvert.DeserializeObject<show_ip>(result.ToString());
+                return JsonConvert.DeserializeObject<get_ip>(result.ToString());
             else
-                return new show_ip();
+                return new get_ip();
         }
        
         public User_Full deserialize_get_user()
@@ -105,7 +102,7 @@ namespace RhodeCode_NET_API
                 return new user_message();
         }
 
-        public UserGroup_Full deserialize_get_users_group()
+        public UserGroup_Full deserialize_get_user_group()
         {
             if (result != null)
                 return JsonConvert.DeserializeObject<UserGroup_Full>(result.ToString());
@@ -113,7 +110,7 @@ namespace RhodeCode_NET_API
                 return new UserGroup_Full();
         }
 
-        public UserGroup[] deserialize_get_users_groups()
+        public UserGroup[] deserialize_get_user_groups()
         {
             if (result != null)
                 return JsonConvert.DeserializeObject<UserGroup[]>(result.ToString());
@@ -121,7 +118,7 @@ namespace RhodeCode_NET_API
                 return new UserGroup[0];
         }
 
-        public user_group_message deserialize_create_users_group()
+        public user_group_message deserialize_create_user_group()
         {
             if (result != null)
                 return JsonConvert.DeserializeObject<user_group_message>(result.ToString());
@@ -129,7 +126,7 @@ namespace RhodeCode_NET_API
                 return new user_group_message();
         }
 
-        public response deserialize_add_user_to_users_group()
+        public response deserialize_add_user_to_user_group()
         {
             if (result != null)
                 return JsonConvert.DeserializeObject<response>(result.ToString());
@@ -137,7 +134,7 @@ namespace RhodeCode_NET_API
                 return new response();
         }
 
-        public response deserialize_remove_user_from_users_group()
+        public response deserialize_remove_user_from_user_group()
         {
             if (result != null)
                 return JsonConvert.DeserializeObject<response>(result.ToString());
@@ -209,7 +206,7 @@ namespace RhodeCode_NET_API
                 return new response();
         }
 
-        public response deserialize_grant_users_group_permission()
+        public response deserialize_grant_user_group_permission()
         {
             if (result != null)
                 return JsonConvert.DeserializeObject<response>(result.ToString());
@@ -217,7 +214,7 @@ namespace RhodeCode_NET_API
                 return new response();
         }
 
-        public response deserialize_revoke_users_group_permission()
+        public response deserialize_revoke_user_group_permission()
         {
             if (result != null)
                 return JsonConvert.DeserializeObject<response>(result.ToString());
@@ -247,7 +244,7 @@ namespace RhodeCode_NET_API
         public string ip_addr;
         public string[] ip_range;
     }
-    public struct show_ip
+    public struct get_ip
     {
         public string ip_addr_server;
         public user_ip[] user_ips;
@@ -265,7 +262,7 @@ namespace RhodeCode_NET_API
     public struct user_group_message
     {
         public string msg;
-        public UserGroup users_group;
+        public UserGroup user_group;
     }
     public struct response
     {

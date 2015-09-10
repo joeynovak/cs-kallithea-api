@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("RhodeCode-NET-API")]
-[assembly: AssemblyDescription("A .NET API for working with RhodeCode JSON API.")]
+[assembly: AssemblyTitle("Kallithea-NET-API")]
+[assembly: AssemblyDescription("A .NET API for working with Kallithea JSON API.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RhodeCode-NET-API")]
+[assembly: AssemblyProduct("Kallithea-NET-API")]
 [assembly: AssemblyCopyright("Copyright © Brandon Jones 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

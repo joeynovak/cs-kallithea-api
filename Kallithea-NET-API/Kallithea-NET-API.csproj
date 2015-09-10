@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>RhodeCode_NET_API</RootNamespace>
-    <AssemblyName>RhodeCode-NET-API</AssemblyName>
+    <AssemblyName>Kallithea_NET_API</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -42,7 +42,7 @@
   <ItemGroup>
     <Compile Include="API.cs" />
     <Compile Include="Request.cs" />
-    <Compile Include="RhodeCode.cs" />
+    <Compile Include="Kallithea.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="User.cs" />

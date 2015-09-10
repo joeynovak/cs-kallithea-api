@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿
 /**
  * This class contains all the request and response
  * data structures for Repository related calls. 
  */
-namespace RhodeCode_NET_API
+namespace Kallithea_NET_API
 {
     /// <summary>
     /// Data structure used by:

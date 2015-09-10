@@ -1,9 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RhodeCode-NET-API", "RhodeCode-NET-API\RhodeCode-NET-API.csproj", "{EBF90513-FA10-4CB9-A03D-29047FEFFAD9}"
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kallithea-NET-API", "Kallithea-NET-API\Kallithea-NET-API.csproj", "{EBF90513-FA10-4CB9-A03D-29047FEFFAD9}"
+	GlobalSection(HgVSProperties) = preSolution
+		SolutionIsControlled = True
+		SolutionBindings = <Solution Location In Database>
+	EndGlobalSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-RhodeCode-NET-API", "Test-RhodeCode-NET-API\Test-RhodeCode-NET-API.csproj", "{7B6677B1-E238-4D96-A957-241C6AC17A96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test-Kallithea-NET-API", "Test-Kallithea-NET-API\Test-Kallithea-NET-API.csproj", "{7B6677B1-E238-4D96-A957-241C6AC17A96}"
+	GlobalSection(HgVSProperties) = preSolution
+		SolutionIsControlled = True
+		SolutionBindings = <Solution Location In Database>
+	EndGlobalSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,5 +32,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(HgVSProperties) = preSolution
+		SolutionIsControlled = True
+		SolutionBindings = <Solution Location In Database>
 	EndGlobalSection
 EndGlobal
