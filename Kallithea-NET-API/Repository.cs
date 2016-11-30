@@ -22,6 +22,7 @@ namespace Kallithea_NET_API
         public bool enable_downloads = false;      // Optional. (false)
         public bool enable_locking = false;        // Optional. (false)
         public bool enable_statistics = false;     // Optional. (false)
+        public bool copy_permissions = false;      // Optional. (false)
     }
 
     /// <summary>
@@ -37,7 +38,7 @@ namespace Kallithea_NET_API
         public string description = "";                         // Optional. ("")
         public bool @private = false;                           // Optional. (false)
         public string clone_uri = null;                         // Optional. (null)
-        public string[] landing_rev = { "rev", "tip" };           // Optional. (tip)
+        public string[] landing_rev = { "rev", "tip" };         // Optional. (tip)
         public bool enable_downloads = false;                   // Optional. (false)
         public bool enable_locking = false;                     // Optional. (false)
         public bool enable_statistics = false;                  // Optional. (false)
@@ -114,7 +115,10 @@ namespace Kallithea_NET_API
 
         // Used by user_group type.
         public int? id = null;
-        public string name = null; 
+        public string name = null;
+
+        // Used by repo_group type.
+        public string origin;
     }
 
 

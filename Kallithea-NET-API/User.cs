@@ -15,7 +15,6 @@ namespace Kallithea_NET_API
     public class User
     {
         public int user_id;
-        public string api_key;
         public string username;
         public string firstname;
         public string lastname;
@@ -23,8 +22,6 @@ namespace Kallithea_NET_API
         public string[] emails;
         public bool active;
         public bool admin;
-        public string ldap_dn;
-        public string last_login;
     }
 
     /// <summary>
@@ -54,14 +51,15 @@ namespace Kallithea_NET_API
     /// </summary>
     public class User_Create
     {
-        public string username;         // Required
-        public string email;            // Required
-        public string password = "";    // Optional ("")
-        public string firstname = "";   // Optional ("")
-        public string lastname = "";    // Optional ("")
-        public bool active = true;      // Optional (false)
-        public bool admin = false;      // Optional (false)
-        public string ldap_dn = "";     // Optional ("")
+        public string username;                     // Required
+        public string email;                        // Required
+        public string password = "";                // Optional ("")
+        public string firstname = "";               // Optional ("")
+        public string lastname = "";                // Optional ("")
+        public bool active = true;                  // Optional (false)
+        public bool admin = false;                  // Optional (false)
+        public string extern_name = "internal";     // Optional ("internal")
+        public string extern_type = "internal";     // Optional ("internal")
     }
 
     /// <summary>
@@ -71,15 +69,16 @@ namespace Kallithea_NET_API
     /// </summary>
     public class User_Update
     {
-        public int userid;              // Required.
-        public string username = null;  // Optional (null)
-        public string email = null;     // Optional (null)
-        public string password = null;  // Optional (null)
-        public string firstname = null; // Optional (null)
-        public string lastname = null;  // Optional (null)
-        public bool? active = null;     // Optional (null)
-        public bool? admin = null;      // Optional (null)
-        public string ldap_dn = null;   // Optional (null)
+        public int userid;                  // Required.
+        public string username = null;      // Optional (null)
+        public string email = null;         // Optional (null)
+        public string password = null;      // Optional (null)
+        public string firstname = null;     // Optional (null)
+        public string lastname = null;      // Optional (null)
+        public bool? active = null;         // Optional (null)
+        public bool? admin = null;          // Optional (null)
+        public string extern_type = null;   // Optional (null)
+        public string extern_name = null;   // Optional (null)
     }
 
     /// <summary>

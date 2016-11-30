@@ -228,7 +228,8 @@ namespace Kallithea_NET_API
             args.email = create.email;
             args.firstname = create.firstname;
             args.lastname = create.lastname;
-            args.ldap_dn = create.ldap_dn;
+            args.extern_type = create.extern_type;
+            args.extern_name = create.extern_name;
             args.password = create.password;
             args.username = create.username;
 
@@ -259,7 +260,8 @@ namespace Kallithea_NET_API
             args.email = update.email;
             args.firstname = update.firstname;
             args.lastname = update.lastname;
-            args.ldap_dn = update.ldap_dn;
+            args.extern_type = update.extern_type;
+            args.extern_name = update.extern_name;
             args.password = update.password;
             args.username = update.username;
             args.userid = update.userid;
@@ -365,6 +367,29 @@ namespace Kallithea_NET_API
         }
 
         /// <summary>
+        /// Deletes a user group. This command can be 
+        /// executed only using api_key belonging to user 
+        /// with admin rights.
+        /// </summary>
+        /// <param name="usergroupid">The name of the user group to be deleted.</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response delete_user_group(int usergroupid)
+        {
+            // Build the arguments.
+            delete_user_group_args args = new delete_user_group_args();
+            args.usergroupid = usergroupid;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "delete_user_group";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
         /// Adds a user to a user group. If user exists in that group 
         /// success will be false. This command can be executed only 
         /// using api_key belonging to user with admin rights.
@@ -376,7 +401,7 @@ namespace Kallithea_NET_API
         {
             // Build the arguments
             edit_user_group_args args;
-            args.usersgroupid = usergroup;
+            args.usergroupid = usergroup;
             args.userid = user;
 
             // Create the request.
@@ -401,7 +426,7 @@ namespace Kallithea_NET_API
         {
             // Build the arguments
             edit_user_group_args args;
-            args.usersgroupid = usergroup;
+            args.usergroupid = usergroup;
             args.userid = user;
 
             // Create the request.
@@ -512,6 +537,7 @@ namespace Kallithea_NET_API
             args.enable_downloads = create.enable_downloads;
             args.enable_locking = create.enable_locking;
             args.enable_statistics = create.enable_statistics;
+            args.copy_permissions = create.copy_permissions;
 
             // Create the request.
             API_Request request = new API_Request();
@@ -640,16 +666,18 @@ namespace Kallithea_NET_API
         /// to user with admin rights.
         /// </summary>
         /// <param name="repo">The reponame or repo_id of the repository.</param>
-        /// <param name="usergroup">The user group id or name.</param>
+        /// <param name="usergroupid">The user group id or name.</param>
         /// <param name="perm">repository.(none|read|write|admin) permissions to grant.</param>
+        /// <param name="apply_to_children">Apply permissions to children of option 'none', 'repos', 'groups', 'all'.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response grant_user_group_permission(string repo, string usergroup, string perm)
+        public API_Response grant_user_group_permission(string repo, string usergroup, string perm, string apply_to_children = "none")
         {
             // Build arguments.
             grant_user_group_permission_args args;
             args.repoid = repo;
-            args.usersgroupid = usergroup;
+            args.usergroupid = usergroup;
             args.perm = perm;
+            args.apply_to_children = apply_to_children;
 
             // Create the request.
             API_Request request = new API_Request();
@@ -667,13 +695,15 @@ namespace Kallithea_NET_API
         /// </summary>
         /// <param name="repo">The reponame or repo_id of the repository.</param>
         /// <param name="usergroup">The user group id or name.</param>
+        /// <param name="apply_to_children">Apply permissions to children of option 'none', 'repos', 'groups', 'all'.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response revoke_user_group_permission(string repo, string usergroup)
+        public API_Response revoke_user_group_permission(string repo, string usergroup, string apply_to_children = "none")
         {
             // Build arguments.
             revoke_user_group_permission_args args;
             args.repoid = repo;
-            args.usersgroupid = usergroup;
+            args.usergroupid = usergroup;
+            args.apply_to_children = apply_to_children;
 
             // Create the request.
             API_Request request = new API_Request();
@@ -684,6 +714,38 @@ namespace Kallithea_NET_API
             // Send the request and return response.
             return API_Call(request);
         }
+
+        /// <summary>
+        /// Creates a repository group. Group name can have / in group_name. For example “foo/bar/baz” 
+        /// will create group baz, with foo/bar as parent This command can be executed only using 
+        /// api_key belonging to user with admin rights or user who has create repogroup permission.
+        /// </summary>
+        /// <param name="group_name">The name of the group to be created.</param>
+        /// <param name="description">A description for the group being created. (Optional - Default is group_name)</param>
+        /// <param name="owner">The owner of the newly created group.  (Optional - Default is _apiuser_)</param>
+        /// <param name="parent">The name of the parent group.  (Optional - Default is null)</param>
+        /// <param name="copy_permissions">Whether to copy permissions from parent group.  (Optional - Default is false)</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response create_repo_group(string group_name, string description = "", string owner= "_apiuser_", string parent = null, bool copy_permissions = false)
+        {
+            // Build arguments.
+            create_repo_group_args args;
+            args.group_name = group_name;
+            args.description = description;
+            args.owner = owner;
+            args.parent = parent;
+            args.copy_permissions = copy_permissions;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "create_repo_group";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
 
         /*
          * Arguments for the API calls.
@@ -716,9 +778,19 @@ namespace Kallithea_NET_API
             public string password;
             public string firstname;
             public string lastname;
-            public bool active;
-            public bool admin;
-            public string ldap_dn;
+            public bool? active;
+            public bool? admin;
+            public string extern_name;
+            public string extern_type;
+
+            public bool ShouldSerializepassword() { return password != ""; }
+            public bool ShouldSerializefirstname() { return firstname != ""; }
+            public bool ShouldSerializelastname() { return lastname != ""; }
+            public bool ShouldSerializeactive() { return active != true; }
+            public bool ShouldSerializeadmin() { return admin != false; }
+            public bool ShouldSerializeextern_name() { return extern_name != "internal"; }
+            public bool ShouldSerializeextern_type() { return extern_type != "internal"; }
+
         }
         
         // Conditional Serialization
@@ -732,7 +804,8 @@ namespace Kallithea_NET_API
             public string lastname;
             public bool? active;
             public bool? admin;
-            public string ldap_dn;
+            public string extern_name;
+            public string extern_type;
 
             public bool ShouldSerializeusername() { return username != null; }
             public bool ShouldSerializeemail() { return email != null; }
@@ -741,7 +814,8 @@ namespace Kallithea_NET_API
             public bool ShouldSerializelastname() { return lastname != null; }
             public bool ShouldSerializeactive() { return active != null; }
             public bool ShouldSerializeadmin() { return admin != null; }
-            public bool ShouldSerializeldap_dn() { return ldap_dn != null; }
+            public bool ShouldSerializeextern_name() { return extern_name != null; }
+            public bool ShouldSerializeextern_type() { return extern_type != null; }
         }
 
         private struct delete_user_args { public string userid; }
@@ -758,8 +832,14 @@ namespace Kallithea_NET_API
             public bool ShouldSerializeowner() { return owner != "_apiuser_"; }
             public bool ShouldSerializeactive() { return active != null; }
         }
-       
-        private struct edit_user_group_args { public string usersgroupid; public string userid; }
+
+        private struct delete_user_group_args
+        {
+            public int usergroupid;
+
+        }
+
+        private struct edit_user_group_args { public string usergroupid; public string userid; }
        
         private struct get_repo_args { public string repoid; }
        
@@ -778,8 +858,10 @@ namespace Kallithea_NET_API
             public bool enable_downloads;
             public bool enable_locking;
             public bool enable_statistics;
+            public bool copy_permissions;
 
             public bool ShouldSerializeowner() { return owner != "_apiuser_"; }
+            public bool ShouldSerializecopy_permissions() { return copy_permissions != false; }
         }
        
         // Conditional Serialization
@@ -809,8 +891,34 @@ namespace Kallithea_NET_API
 
         private struct revoke_user_permission_args { public string repoid; public string userid; }
 
-        private struct grant_user_group_permission_args { public string repoid; public string usersgroupid; public string perm; }
+        private struct grant_user_group_permission_args
+        {
+            public string repoid;
+            public string usergroupid;
+            public string perm;
+            public string apply_to_children;
+        }
 
-        private struct revoke_user_group_permission_args { public string repoid; public string usersgroupid; }
+        private struct revoke_user_group_permission_args
+        {
+            public string repoid;
+            public string usergroupid;
+            public string apply_to_children;
+        }
+
+        // Conditional Serialization
+        private struct create_repo_group_args
+        {
+            public string group_name;
+            public string description;
+            public string owner;
+            public string parent;
+            public bool copy_permissions;
+
+            public bool ShouldSerializedescription() { return description != ""; }
+            public bool ShouldSerializeowner() { return owner != "_apiuser_"; }
+            public bool ShouldSerializeparent() { return parent != null; }
+            public bool ShouldSerializecopy_permissions() { return copy_permissions != false; }
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Kallithea_NET_API;
 
 namespace Test_Kallithea_NET_API
@@ -14,7 +14,7 @@ namespace Test_Kallithea_NET_API
         static void Main(string[] args)
         {
             // Create a connection to the Kallithea server (in this case, HERMES).  API Key of KTAdmin.
-            Kallithea local = new Kallithea("http://192.168.1.7:5005/_admin/api", "d7652a661bbfd3129aaa7cdb1c7f6ae5207efecd");
+            Kallithea local = new Kallithea("https://kallithea.winemantech.com/_admin/api", "d7652a661bbfd3129aaa7cdb1c7f6ae5207efecd");
             API_Response response = new API_Response();
             string currentTest = "", currentError = "";
 
@@ -28,6 +28,12 @@ namespace Test_Kallithea_NET_API
 
             // Used to store the Unit Test name and pass/fail metric.
             Dictionary<string, string> unitTestResults = new Dictionary<string, string>();
+
+            // Variable used for cross-test communication.
+            int uid = 0;
+            int ugid = 0;
+
+
 
             // Unit Test: Create User
             //
@@ -43,12 +49,34 @@ namespace Test_Kallithea_NET_API
                 newUser.lastname = "Test";
                 newUser.password = "MyPassword123";
                 newUser.username = "UnitTest";
-                newUser.ldap_dn = "OU=Unit,DC=Test,DC=com";
+                newUser.extern_type = "ldap";
+                newUser.extern_name = "DC=COM=COM";
 
                 response = local.create_user(newUser);
-                user_message userCreateResult = response.deserialize_create_user();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.result == null)
+                {
+                    Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+                }
+                else
+                {
+                    Console.WriteLine(response.result.ToString());
+
+                    user_message userCreateResult = response.deserialize_create_user();
+
+                    // If command completed successfully, assert that returned values are as expected.
+                    Debug.Assert(userCreateResult.user.active == newUser.active, "UserCreate.active assertion failed! Expected: '" + newUser.active.ToString() + "'  Actual'" + userCreateResult.user.active.ToString() + "'");
+                    Debug.Assert(userCreateResult.user.admin == newUser.admin, "UserCreate.admin assertion failed! Expected: '" + newUser.admin.ToString() + "'  Actual'" + userCreateResult.user.admin.ToString() + "'");
+                    Debug.Assert(userCreateResult.user.email == newUser.email, "UserCreate.email assertion failed! Expected: '" + newUser.email + "'  Actual'" + userCreateResult.user.email + "'");
+                    Debug.Assert(userCreateResult.user.firstname == newUser.firstname, "UserCreate.firstname assertion failed! Expected: '" + newUser.firstname + "'  Actual'" + userCreateResult.user.firstname + "'");
+                    Debug.Assert(userCreateResult.user.lastname == newUser.lastname, "UserCreate.lastname assertion failed! Expected: '" + newUser.lastname + "'  Actual'" + userCreateResult.user.lastname + "'");
+                    Debug.Assert(userCreateResult.user.username == newUser.username, "UserCreate.username assertion failed! Expected: '" + newUser.username + "'  Actual'" + userCreateResult.user.username + "'");
+                   
+                    // Used for update_user command.
+                    uid = userCreateResult.user.user_id;
+                }
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -64,17 +92,39 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Update User";
 
                 User_Update updateUser = new User_Update();
+                updateUser.userid = uid;
                 updateUser.active = false;
                 updateUser.admin = true;
-                //updateUser.ldap_dn = "";
                 updateUser.email = "test_unit@example.com";
                 updateUser.firstname = "Test";
                 updateUser.lastname = "Unit";
+                updateUser.extern_name = "DC=com";
+                updateUser.extern_type = "ldap";
+                updateUser.username = "TestUnit";
+                updateUser.password = "qwertyasdf";
 
                 response = local.update_user(updateUser);
-                user_update updateUserResult = response.deserialize_update_user();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.result == null)
+                {
+                    Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+                }
+                else
+                {
+                    Console.WriteLine(response.result.ToString());
+
+                    user_update updateUserResult = response.deserialize_update_user();
+
+                    // If command completed successfully, assert that returned values are as expected.
+                    Debug.Assert(updateUserResult.user.active == updateUser.active, "UserUpdate.active assertion failed! Expected: '" + updateUser.active.ToString() + "'  Actual'" + updateUserResult.user.active.ToString() + "'");
+                    Debug.Assert(updateUserResult.user.admin == updateUser.admin, "UserUpdate.admin assertion failed! Expected: '" + updateUser.admin.ToString() + "'  Actual'" + updateUserResult.user.admin.ToString() + "'");
+                    Debug.Assert(updateUserResult.user.email == updateUser.email, "UserUpdate.email assertion failed! Expected: '" + updateUser.email + "'  Actual'" + updateUserResult.user.email + "'");
+                    Debug.Assert(updateUserResult.user.firstname == updateUser.firstname, "UserUpdate.firstname assertion failed! Expected: '" + updateUser.firstname + "'  Actual'" + updateUserResult.user.firstname + "'");
+                    Debug.Assert(updateUserResult.user.lastname == updateUser.lastname, "UserUpdate.lastname assertion failed! Expected: '" + updateUser.lastname + "'  Actual'" + updateUserResult.user.lastname + "'");
+                    Debug.Assert(updateUserResult.user.username == updateUser.username, "UserUpdate.username assertion failed! Expected: '" + updateUser.username + "'  Actual'" + updateUserResult.user.username + "'");
+                }
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -89,10 +139,13 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Get User";
 
-                response = local.get_user("UnitTest");
+                response = local.get_user(uid.ToString());
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 User_Full getUserResult = response.deserialize_get_user();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -107,10 +160,13 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Get IP";
 
-                response = local.get_ip("UnitTest");
+                response = local.get_ip(uid.ToString());
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 get_ip getIPResult = response.deserialize_get_ip();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -126,9 +182,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Get Users";
 
                 response = local.get_users();
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 User_Extended[] getUsersResult = response.deserialize_get_users();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -144,9 +203,14 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Create User Group";
 
                 response = local.create_user_group("UnitTest Group");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 user_group_message userGroupCreateResult = response.deserialize_create_user_group();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                ugid = userGroupCreateResult.user_group.users_group_id;
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -161,10 +225,13 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Add User to User Group";
 
-                response = local.add_user_to_user_group("UnitTest Group", "UnitTest");
+                response = local.add_user_to_user_group("UnitTest Group", "TestUnit");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 response.deserialize_add_user_to_user_group();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -180,9 +247,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Get User Group";
 
                 response = local.get_user_group("UnitTest Group");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 UserGroup_Full getUserGroupResult = response.deserialize_get_user_group();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -198,9 +268,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Get User Groups";
 
                 response = local.get_user_groups();
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 UserGroup[] getUserGroupsResult = response.deserialize_get_user_groups();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -220,16 +293,19 @@ namespace Test_Kallithea_NET_API
                 newRepo.enable_downloads = true;
                 newRepo.enable_locking = false;
                 newRepo.enable_statistics = false;
-                newRepo.owner = "UnitTest";
+                newRepo.owner = "TestUnit";
                 newRepo.@private = false;
                 newRepo.repo_name = "UnitTest Repo";
                 newRepo.repo_type = "hg";
                 newRepo.landing_rev = "tip";
 
                 response = local.create_repo(newRepo);
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 repository_message repoCreateResult = response.deserialize_create_repo();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -245,9 +321,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Fork Repo";
 
                 response = local.fork_repo("UnitTest Repo", "UnitTest Repo_FORK", "UnitTest Repository Fork - Also Delete Me", true, false, "tip", "UnitTest");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 response.deserialize_fork_repo();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -263,9 +342,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Get Repo";
 
                 response = local.get_repo("UnitTest Repo");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 Repository_Full getRepoResult = response.deserialize_get_repo();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -282,11 +364,11 @@ namespace Test_Kallithea_NET_API
 
                 response = local.get_repos();
 
-                Console.WriteLine(response.result.ToString());
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString()); 
 
                 Repository_All[] getReposResult = response.deserialize_get_repos();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -302,9 +384,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Get Repo Nodes";
 
                 response = local.get_repo_nodes("UnitTest Repo", 0, "");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 Repository_Node[] getReposResult = response.deserialize_get_repo_nodes();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -320,9 +405,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Pull";
 
                 response = local.pull("UnitTest Repo");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 string pullResult = response.deserialize_pull();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -338,9 +426,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Rescan Repos";
 
                 response = local.rescan_repos();
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 rescan_repos rescanReposResult = response.deserialize_rescan_repos();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -356,9 +447,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Invalidate Cache";
 
                 response = local.invalidate_cache("UnitTest Repo");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 string invalidateCacheResult = response.deserialize_invalidate_cache();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -374,9 +468,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Lock";
 
                 response = local.lock_repo("UnitTest Repo");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 lock_repo lockResult = response.deserialize_lock();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -392,9 +489,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Grant User Permission";
 
                 response = local.grant_user_permission("UnitTest Repo", "UnitTest", "repository.read");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 response.deserialize_grant_user_permission();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -409,10 +509,34 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Grant User Group Permission";
 
-                response = local.grant_user_group_permission("UnitTest Repo", "UnitTest Group", "repository.read");
+                response = local.grant_user_group_permission("UnitTest Repo", "UnitTest Group", "repository.read", "all");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 response.deserialize_grant_user_group_permission();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
+
+
+            // Unit Test: Create Repo Group
+            //
+            try
+            {
+                currentTest = "Create Repo Group";
+
+                response = local.create_repo_group("UnitTest Repository Group", "UnitTest Repository Group - Delete Me");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
+                repository_group_message repogroupCreateResult = response.deserialize_create_repo_group();
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -422,7 +546,7 @@ namespace Test_Kallithea_NET_API
 
 
             // This is when everything is done and not undone.  Break here if needed to verify.
-            try { } catch { }
+            while (false) ;
 
             
             // Unit Test: Revoke User Group Permission
@@ -431,10 +555,13 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Revoke User Group Permission";
 
-                response = local.revoke_user_group_permission("UnitTest Repo", "UnitTest Group");
+                response = local.revoke_user_group_permission("UnitTest Repo", "UnitTest Group", "none");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 response.deserialize_revoke_user_group_permission();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -450,9 +577,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Revoke User Permission";
 
                 response = local.revoke_user_permission("UnitTest Repo", "UnitTest");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 response.deserialize_revoke_user_permission();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -476,9 +606,12 @@ namespace Test_Kallithea_NET_API
                 currentTest = "Delete Repo";
 
                 response = local.delete_repo("delete", "delete");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 response.deserialize_delete_repo();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -493,10 +626,33 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Remove User from User Group";
 
-                response = local.remove_user_from_user_group("UnitTest Group", "UnitTest");
+                response = local.remove_user_from_user_group("UnitTest Group", "TestUnit");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 response.deserialize_remove_user_from_user_group();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
+
+            // Unit Test: Delete User Group
+            //
+            try
+            {
+                currentTest = "Delete User Group";
+
+                response = local.delete_user_group(ugid);
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
+                response.deserialize_delete_user_group();
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
@@ -510,18 +666,19 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Delete User";
 
-                response = local.delete_user("UnitTest");
+                response = local.delete_user("TestUnit");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
                 user_message deleteUserResult = response.deserialize_delete_user();
 
-                currentError = response.error != "" ? "" : response.error.ToString();
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
             catch (Exception e)
             {
                 unitTestResults.Add(currentTest, e.Message.ToString());
             }
-
-
 
 
             Console.WriteLine("Unit tests have completed!  Here are the results:" + Environment.NewLine + Environment.NewLine);
@@ -537,6 +694,9 @@ namespace Test_Kallithea_NET_API
                                                 + Environment.NewLine);
             }
 
+            Console.WriteLine();
+            Console.WriteLine("Press any key to continue...");
+            Console.Read();
         }
     }
 }

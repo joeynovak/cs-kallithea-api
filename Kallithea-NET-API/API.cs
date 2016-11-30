@@ -126,6 +126,14 @@ namespace Kallithea_NET_API
                 return new user_group_message();
         }
 
+        public message deserialize_delete_user_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<message>(result.ToString());
+            else
+                return new message();
+        }
+
         public response deserialize_add_user_to_user_group()
         {
             if (result != null)
@@ -221,6 +229,14 @@ namespace Kallithea_NET_API
             else
                 return new response();
         }
+
+        public repository_group_message deserialize_create_repo_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<repository_group_message>(result.ToString());
+            else
+                return new repository_group_message();
+        }
     }
 
     /**
@@ -269,10 +285,21 @@ namespace Kallithea_NET_API
         public bool success;
         public string msg;
     }
+    public struct message
+    {
+        public string msg;
+    }
     public struct repository_message 
     {
         public string msg;
-        public Repository_All repo;
+        public bool success;
+        public string task;
+    }
+
+    public struct repository_group_message
+    {
+        public string msg;
+        public RepositoryGroup repogroup;
     }
 
 }
