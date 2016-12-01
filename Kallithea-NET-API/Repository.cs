@@ -60,7 +60,7 @@ namespace Kallithea_NET_API
         public string fork_of;
         public Repository_Changeset last_changeset;
         public Repository_Member[] members;
-        public User_Extended[] followers;        
+        public User[] followers;        
     }
 
     /// <summary>

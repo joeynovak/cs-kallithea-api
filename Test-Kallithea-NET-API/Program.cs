@@ -144,7 +144,7 @@ namespace Test_Kallithea_NET_API
 
                 if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
 
-                User_Full getUserResult = response.deserialize_get_user();
+                User getUserResult = response.deserialize_get_user();
 
                 if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
@@ -186,7 +186,7 @@ namespace Test_Kallithea_NET_API
 
                 if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
 
-                User_Extended[] getUsersResult = response.deserialize_get_users();
+                User[] getUsersResult = response.deserialize_get_users();
 
                 if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);

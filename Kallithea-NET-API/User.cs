@@ -9,38 +9,25 @@ namespace Kallithea_NET_API
     /// <summary>
     /// Data structure used by:
     /// 
-    /// create_user
-    /// update_user
+    /// get_user
+    /// get_users
     /// </summary>
     public class User
     {
         public int user_id;
+        public string api_key;
+        public string[] api_keys;
         public string username;
         public string firstname;
         public string lastname;
         public string email;
         public string[] emails;
+        public string[] ip_addresses;
         public bool active;
         public bool admin;
-    }
-
-    /// <summary>
-    /// Data structure used by:
-    /// 
-    /// get_user
-    /// </summary>
-    public class User_Extended : User
-    {
-        public string[] ip_addresses;
-    }
-
-    /// <summary>
-    /// Data structure used by:
-    /// 
-    /// get_users
-    /// </summary>
-    public class User_Full : User_Extended
-    {
+        public string extern_name;
+        public string extern_type;
+        public string last_login;
         public User_Permission permissions;
     }
 

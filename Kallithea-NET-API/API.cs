@@ -62,20 +62,20 @@ namespace Kallithea_NET_API
                 return new get_ip();
         }
        
-        public User_Full deserialize_get_user()
+        public User deserialize_get_user()
         {
             if (result != null)
-                return JsonConvert.DeserializeObject<User_Full>(result.ToString());
+                return JsonConvert.DeserializeObject<User>(result.ToString());
             else
-                return new User_Full();
+                return new User();
         }
        
-        public User_Extended[] deserialize_get_users()
+        public User[] deserialize_get_users()
         {
             if (result != null)
-                return JsonConvert.DeserializeObject<User_Extended[]>(result.ToString());
+                return JsonConvert.DeserializeObject<User[]>(result.ToString());
             else
-                return new User_Extended[0];
+                return new User[0];
         }
        
         public user_message deserialize_create_user()
@@ -337,7 +337,7 @@ namespace Kallithea_NET_API
     public struct user_update
     {
         public string msg;
-        public User_Extended user;
+        public User user;
     }
     public struct user_group_message
     {

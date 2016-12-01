@@ -3,3 +3,4 @@ E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\bin\Debug\
 E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\obj\Debug\Kallithea_NET_API.dll
 E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\obj\Debug\Kallithea_NET_API.pdb
 E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\obj\Debug\Kallithea-NET-API.csprojResolveAssemblyReference.cache
+E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\bin\Debug\Newtonsoft.Json.dll

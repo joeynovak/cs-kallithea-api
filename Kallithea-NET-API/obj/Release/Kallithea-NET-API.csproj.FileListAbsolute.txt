@@ -1,0 +1,6 @@
+E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\obj\Release\Kallithea-NET-API.csprojResolveAssemblyReference.cache
+E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\bin\Release\Kallithea_NET_API.dll
+E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\bin\Release\Kallithea_NET_API.pdb
+E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\bin\Release\Newtonsoft.Json.dll
+E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\obj\Release\Kallithea_NET_API.dll
+E:\Dropbox\Visual Studio\Projects\Kallithea-NET-API\Kallithea-NET-API\obj\Release\Kallithea_NET_API.pdb
