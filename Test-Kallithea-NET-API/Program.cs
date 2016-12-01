@@ -32,6 +32,7 @@ namespace Test_Kallithea_NET_API
             // Variable used for cross-test communication.
             int uid = 0;
             int ugid = 0;
+            int rgid = 0;
 
 
 
@@ -297,7 +298,8 @@ namespace Test_Kallithea_NET_API
                 newRepo.@private = false;
                 newRepo.repo_name = "UnitTest Repo";
                 newRepo.repo_type = "hg";
-                newRepo.landing_rev = "tip";
+                newRepo.landing_rev = "rev:tip";
+                newRepo.copy_permissions = false;
 
                 response = local.create_repo(newRepo);
 
@@ -320,7 +322,7 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Fork Repo";
 
-                response = local.fork_repo("UnitTest Repo", "UnitTest Repo_FORK", "UnitTest Repository Fork - Also Delete Me", true, false, "tip", "UnitTest");
+                response = local.fork_repo("UnitTest Repo", "UnitTest Repo_FORK", "UnitTest Repository Fork - Also Delete Me", true, false, "rev:tip", "TestUnit");
 
                 if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
 
@@ -383,7 +385,7 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Get Repo Nodes";
 
-                response = local.get_repo_nodes("UnitTest Repo", 0, "");
+                response = local.get_repo_nodes("UnitTest Repo", "rev:tip", "");
 
                 if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
 
@@ -408,7 +410,7 @@ namespace Test_Kallithea_NET_API
 
                 if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
 
-                string pullResult = response.deserialize_pull();
+                pull_message pullResult = response.deserialize_pull();
 
                 if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
@@ -488,7 +490,7 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Grant User Permission";
 
-                response = local.grant_user_permission("UnitTest Repo", "UnitTest", "repository.read");
+                response = local.grant_user_permission("UnitTest Repo", "TestUnit", "repository.read");
 
                 if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
 
@@ -536,6 +538,32 @@ namespace Test_Kallithea_NET_API
 
                 repository_group_message repogroupCreateResult = response.deserialize_create_repo_group();
 
+
+                rgid = repogroupCreateResult.repo_group.group_id;
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
+
+            //
+            // This still isn't working quite yet - will fix later.
+            //
+            // Unit Test: Update Repo Group
+            //
+            try
+            {
+                currentTest = "Update Repo Group";
+           
+                response = local.update_repo_group(rgid.ToString(), "TestUnit Repository Group", "TestUnit Repository Group - Delete Me", "TestUnit");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
+                repository_group_message repogroupUpdateResult = response.deserialize_update_repo_group();
+
                 if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
@@ -545,10 +573,98 @@ namespace Test_Kallithea_NET_API
             }
 
 
+            // Unit Test: Get Repo Group
+            //
+            try
+            {
+                currentTest = "Get Repo Group";
+
+                response = local.get_repo_group(rgid.ToString());
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
+                RepositoryGroup repogroupGetResult = response.deserialize_get_repo_group();
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
+
+
+            // Unit Test: Get Repo Groups
+            //
+            try
+            {
+                currentTest = "Get Repo Groups";
+
+                response = local.get_repo_groups();
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
+                RepositoryGroup[] repogroupsGetResult = response.deserialize_get_repo_groups();
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
+
+
+            // Unit Test: Grant User Permissions To Repo Group
+            //
+            try
+            {
+                currentTest = "Grant User Permissions To Repo Group";
+
+                response = local.grant_user_permission_to_repo_group(rgid.ToString(), "TestUnit", "group.admin");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
+                response grantUserPermToRepoGroupResults = response.deserialize_grant_user_permissions_to_repo_group();
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
+
+
+
+
             // This is when everything is done and not undone.  Break here if needed to verify.
             while (false) ;
 
-            
+
+
+
+            // Unit Test: Revoke User Permissions To Repo Group
+            //
+            try
+            {
+                currentTest = "Revoke User Permissions From Repo Group";
+
+                response = local.revoke_user_permission_from_repo_group(rgid.ToString(), "TestUnit");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
+                response revokeUserPermFromRepoGroupResults = response.deserialize_revoke_user_permissions_from_repo_group();
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
+
+
             // Unit Test: Revoke User Group Permission
             //
             try
@@ -576,7 +692,7 @@ namespace Test_Kallithea_NET_API
             {
                 currentTest = "Revoke User Permission";
 
-                response = local.revoke_user_permission("UnitTest Repo", "UnitTest");
+                response = local.revoke_user_permission("UnitTest Repo", "TestUnit");
 
                 if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
 
@@ -599,13 +715,34 @@ namespace Test_Kallithea_NET_API
             // UPDATE REPO HERE
 
 
+            // Unit Test: Delete Repo Group
+            //
+            try
+            {
+                currentTest = "Delete Repo Group";
+
+                response = local.delete_repo_group(rgid.ToString());
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
+                repository_group_message repogroupDeleteResult = response.deserialize_delete_repo_group();
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
+
+
             // Unit Test: Delete Repo
             //
             try
             {
                 currentTest = "Delete Repo";
 
-                response = local.delete_repo("delete", "delete");
+                response = local.delete_repo("UnitTest Repo", "delete");
 
                 if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
 

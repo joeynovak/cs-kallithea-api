@@ -12,7 +12,7 @@ namespace Kallithea_NET_API
     /// </summary>
     public class RepositoryGroup
     {
-        public string group_id;
+        public int group_id;
         public string group_name;                  // Required. 
         public string group_description = "";      // Optional. (group name)
         public Repository_Member[] members;

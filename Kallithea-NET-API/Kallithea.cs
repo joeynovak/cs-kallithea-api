@@ -493,7 +493,7 @@ namespace Kallithea_NET_API
         /// <param name="root_path">The root path of the repository.</param>
         /// <param name="ret_type">The return type of the call. (Default: all)</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_repo_nodes(string repo, int revision, string root_path, string ret_type = "all")
+        public API_Response get_repo_nodes(string repo, string revision, string root_path, string ret_type = "all")
         {
             // Build the arguments
             get_repo_nodes_args args;
@@ -563,7 +563,7 @@ namespace Kallithea_NET_API
         /// <param name="private">Private repository visibility.</param>
         /// <param name="landing_rev">Revisions to display on statistics page.  (ex. 'tip')</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response fork_repo(string repo, string fork_name, string description, bool copy_permissions, bool @private, string landing_rev, string owner = "_apiuser_")
+        public API_Response fork_repo(string repo, string fork_name, string description, bool copy_permissions, bool @private, string landing_rev, string owner = "apiuser")
         {
             // Build arguments.
             fork_repo_args args;
@@ -720,13 +720,13 @@ namespace Kallithea_NET_API
         /// will create group baz, with foo/bar as parent This command can be executed only using 
         /// api_key belonging to user with admin rights or user who has create repogroup permission.
         /// </summary>
-        /// <param name="group_name">The name of the group to be created.</param>
-        /// <param name="description">A description for the group being created. (Optional - Default is group_name)</param>
-        /// <param name="owner">The owner of the newly created group.  (Optional - Default is _apiuser_)</param>
-        /// <param name="parent">The name of the parent group.  (Optional - Default is null)</param>
-        /// <param name="copy_permissions">Whether to copy permissions from parent group.  (Optional - Default is false)</param>
+        /// <param name="group_name">The name of the repo group to be created.</param>
+        /// <param name="description">A description for the repo group being created. (Optional - Default is group_name)</param>
+        /// <param name="owner">The owner of the newly created repo group.  (Optional - Default is _apiuser_)</param>
+        /// <param name="parent">The name of the parent repo group.  (Optional - Default is null)</param>
+        /// <param name="copy_permissions">Whether to copy permissions from parent repo group.  (Optional - Default is false)</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response create_repo_group(string group_name, string description = "", string owner= "_apiuser_", string parent = null, bool copy_permissions = false)
+        public API_Response create_repo_group(string group_name, string description = null, string owner = null, string parent = null, bool? copy_permissions = null)
         {
             // Build arguments.
             create_repo_group_args args;
@@ -739,6 +739,159 @@ namespace Kallithea_NET_API
             // Create the request.
             API_Request request = new API_Request();
             request.method = "create_repo_group";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
+        /// Updates a repository group.  This command can be executed only using 
+        /// api_key belonging to user with admin rights or user who has create 
+        /// repogroup permission.
+        /// </summary>
+        /// <param name="repogroupid">The name or id of the repo group to be updated.</param>
+        /// <param name="group_name">The name of the repo group to be updated.  (Optional)</param>
+        /// <param name="description">A description for the repo group being updated.  (Optional)</param>
+        /// <param name="owner">The owner of the repo group.  (Optional)</param>
+        /// <param name="parent">The name of the parent repo group.  (Optional)</param>
+        /// <param name="copy_permissions">Whether to copy permissions from parent repo group.  (Optional)</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response update_repo_group(string repogroupid, string group_name = null, string description = null, string owner = null, string parent = null, bool? copy_permissions = null, bool? enable_locking = null)
+        {
+            // Build arguments.
+            update_repo_group_args args;
+            args.repogroupid = repogroupid;
+            args.group_name = group_name;
+            args.description = description;
+            args.owner = owner;
+            args.parent = parent;
+            args.copy_permissions = copy_permissions;
+            args.enable_locking = enable_locking;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "update_repo_group";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
+        /// Deletes a repository group.  This command can be executed only using 
+        /// api_key belonging to user with admin rights or user who has create 
+        /// repogroup permission.
+        /// </summary>
+        /// <param name="repogroupid">The name or id of the repo group to be updated.</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response delete_repo_group(string repogroupid)
+        {
+            // Build arguments.
+            delete_repo_group_args args;
+            args.repogroupid = repogroupid;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "delete_repo_group";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
+        /// Returns a repository group.  This command can be executed only using 
+        /// api_key belonging to user with admin rights or user who has create 
+        /// repogroup permission.
+        /// </summary>
+        /// <param name="repogroupid">The name or id of the repo group to be returned.</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response get_repo_group(string repogroupid)
+        {
+            // Build arguments.
+            get_repo_group_args args;
+            args.repogroupid = repogroupid;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "get_repo_group";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
+        /// Returns all repository groups.  This command can be executed only using 
+        /// api_key belonging to user with admin rights or user who has create 
+        /// repogroup permission.
+        /// </summary>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response get_repo_groups()
+        {
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "get_repo_groups";
+            request.api_key = api_key;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
+        /// Grants a user permission to a repo group. This command can be executed only using 
+        /// api_key belonging to user with admin rights or user who has create 
+        /// repogroup permission.
+        /// </summary>
+        /// <param name="repogroupid">The name or id of the repo group to grant permissions to.</param>
+        /// <param name="userid">The name or id of the user to grant permissions to.</param>
+        /// <param name="perm">The level of permissions to grant.  (group.(none|read|write|admin))</param>
+        /// <param name="apply_to_children">Whether to apply these updates to children of specified type. (none|repos|groups|all)</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response grant_user_permission_to_repo_group(string repogroupid, string userid, string perm, string apply_to_children = "none")
+        {
+            // Build arguments.
+            grant_user_permission_to_repo_group_args args;
+            args.repogroupid = repogroupid;
+            args.userid = userid;
+            args.perm = perm;
+            args.apply_to_children = apply_to_children;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "grant_user_permission_to_repo_group";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
+        /// Revokes all user permissions to a repo group. This command can be executed only using 
+        /// api_key belonging to user with admin rights or user who has create 
+        /// repogroup permission.
+        /// </summary>
+        /// <param name="repogroupid">The name or id of the repo group to grant permissions to.</param>
+        /// <param name="userid">The name or id of the user to grant permissions to.</param>
+        /// <param name="apply_to_children">Whether to apply these updates to children of specified type. (none|repos|groups|all)</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response revoke_user_permission_from_repo_group(string repogroupid, string userid, string apply_to_children = "none")
+        {
+            // Build arguments.
+            revoke_user_permission_from_repo_group_args args;
+            args.repogroupid = repogroupid;
+            args.userid = userid;
+            args.apply_to_children = apply_to_children;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "revoke_user_permission_from_repo_group";
             request.api_key = api_key;
             request.args = args;
 
@@ -843,7 +996,7 @@ namespace Kallithea_NET_API
        
         private struct get_repo_args { public string repoid; }
        
-        private struct get_repo_nodes_args { public string repoid; public int revision; public string root_path; public string ret_type; }
+        private struct get_repo_nodes_args { public string repoid; public string revision; public string root_path; public string ret_type; }
         
         // Conditional Serialization
         private struct create_repo_args
@@ -860,8 +1013,8 @@ namespace Kallithea_NET_API
             public bool enable_statistics;
             public bool copy_permissions;
 
-            public bool ShouldSerializeowner() { return owner != "_apiuser_"; }
-            public bool ShouldSerializecopy_permissions() { return copy_permissions != false; }
+            public bool ShouldSerializeowner() { return owner != "apiuser"; }
+            public bool ShouldSerializeclone_uri() { return clone_uri != null; }
         }
        
         // Conditional Serialization
@@ -913,12 +1066,56 @@ namespace Kallithea_NET_API
             public string description;
             public string owner;
             public string parent;
-            public bool copy_permissions;
+            public bool? copy_permissions;
 
-            public bool ShouldSerializedescription() { return description != ""; }
-            public bool ShouldSerializeowner() { return owner != "_apiuser_"; }
+            public bool ShouldSerializedescription() { return description != null; }
+            public bool ShouldSerializeowner() { return owner != null; }
             public bool ShouldSerializeparent() { return parent != null; }
-            public bool ShouldSerializecopy_permissions() { return copy_permissions != false; }
+            public bool ShouldSerializecopy_permissions() { return copy_permissions != null; }
+        }
+
+        // Conditional Serialization
+        private struct update_repo_group_args
+        {
+            public string repogroupid;
+            public string group_name;
+            public string description;
+            public string owner;
+            public string parent;
+            public bool? copy_permissions;
+            public bool? enable_locking;
+
+            public bool ShouldSerializegroup_name() { return group_name != null; }
+            public bool ShouldSerializedescription() { return description != null; }
+            public bool ShouldSerializeowner() { return owner != null; }
+            public bool ShouldSerializeparent() { return parent != null; }
+            public bool ShouldSerializecopy_permissions() { return copy_permissions != null; }
+            public bool ShouldSerializeenable_locking() { return enable_locking != null; }
+        }
+
+        private struct delete_repo_group_args
+        {
+            public string repogroupid;
+        }
+
+        private struct get_repo_group_args
+        {
+            public string repogroupid;
+        }
+
+        private struct grant_user_permission_to_repo_group_args
+        {
+            public string repogroupid;
+            public string userid;
+            public string perm;
+            public string apply_to_children;
+        }
+
+        private struct revoke_user_permission_from_repo_group_args
+        {
+            public string repogroupid;
+            public string userid;
+            public string apply_to_children;
         }
     }
 }

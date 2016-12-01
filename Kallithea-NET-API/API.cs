@@ -22,12 +22,12 @@ namespace Kallithea_NET_API
         public object result;
         public string error;
 
-        public string deserialize_pull()
+        public pull_message deserialize_pull()
         {
             if (result != null)
-                return result.ToString();
+                return JsonConvert.DeserializeObject<pull_message>(result.ToString());
             else
-                return "";
+                return new pull_message();
         }
       
         public rescan_repos deserialize_rescan_repos()
@@ -237,6 +237,54 @@ namespace Kallithea_NET_API
             else
                 return new repository_group_message();
         }
+
+        public repository_group_message deserialize_update_repo_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<repository_group_message>(result.ToString());
+            else
+                return new repository_group_message();
+        }
+
+        public repository_group_message deserialize_delete_repo_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<repository_group_message>(result.ToString());
+            else
+                return new repository_group_message();
+        }
+
+        public RepositoryGroup deserialize_get_repo_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<RepositoryGroup>(result.ToString());
+            else
+                return new RepositoryGroup();
+        }
+
+        public RepositoryGroup[] deserialize_get_repo_groups()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<RepositoryGroup[]>(result.ToString());
+            else
+                return new RepositoryGroup[0];
+        }
+
+        public response deserialize_grant_user_permissions_to_repo_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
+
+        public response deserialize_revoke_user_permissions_from_repo_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
     }
 
     /**
@@ -299,7 +347,13 @@ namespace Kallithea_NET_API
     public struct repository_group_message
     {
         public string msg;
-        public RepositoryGroup repogroup;
+        public RepositoryGroup repo_group;
+    }
+
+    public struct pull_message
+    {
+        public string msg;
+        public string repository;
     }
 
 }
