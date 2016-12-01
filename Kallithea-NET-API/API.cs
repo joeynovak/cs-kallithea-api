@@ -285,6 +285,22 @@ namespace Kallithea_NET_API
             else
                 return new response();
         }
+
+        public response deserialize_grant_user_group_permissions_to_repo_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
+
+        public response deserialize_revoke_user_group_permissions_from_repo_group()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<response>(result.ToString());
+            else
+                return new response();
+        }
     }
 
     /**

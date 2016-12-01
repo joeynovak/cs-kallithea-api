@@ -873,12 +873,12 @@ namespace Kallithea_NET_API
         }
 
         /// <summary>
-        /// Revokes all user permissions to a repo group. This command can be executed only using 
+        /// Revokes all user permissions from a repo group. This command can be executed only using 
         /// api_key belonging to user with admin rights or user who has create 
         /// repogroup permission.
         /// </summary>
-        /// <param name="repogroupid">The name or id of the repo group to grant permissions to.</param>
-        /// <param name="userid">The name or id of the user to grant permissions to.</param>
+        /// <param name="repogroupid">The name or id of the repo group to grant permissions from.</param>
+        /// <param name="userid">The name or id of the user to revoke permissions.</param>
         /// <param name="apply_to_children">Whether to apply these updates to children of specified type. (none|repos|groups|all)</param>
         /// <returns>API_Response containing results of operation.</returns>
         public API_Response revoke_user_permission_from_repo_group(string repogroupid, string userid, string apply_to_children = "none")
@@ -899,6 +899,61 @@ namespace Kallithea_NET_API
             return API_Call(request);
         }
 
+        /// <summary>
+        /// Grants a user group permission to a repo group. This command can be executed only using 
+        /// api_key belonging to user with admin rights or user who has create 
+        /// repogroup permission.
+        /// </summary>
+        /// <param name="repogroupid">The name or id of the repo group to grant permissions to.</param>
+        /// <param name="usergroupid">The id of the user group to grant permissions to.</param>
+        /// <param name="perm">The level of permissions to grant.  (group.(none|read|write|admin))</param>
+        /// <param name="apply_to_children">Whether to apply these updates to children of specified type. (none|repos|groups|all)</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response grant_user_group_permission_to_repo_group(string repogroupid, string usergroupid, string perm, string apply_to_children = "none")
+        {
+            // Build arguments.
+            grant_user_group_permission_to_repo_group_args args;
+            args.repogroupid = repogroupid;
+            args.usergroupid = usergroupid;
+            args.perm = perm;
+            args.apply_to_children = apply_to_children;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "grant_user_group_permission_to_repo_group";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
+        /// Revokes all user group permissions from a repo group. This command can be executed only using 
+        /// api_key belonging to user with admin rights or user who has create 
+        /// repogroup permission.
+        /// </summary>
+        /// <param name="repogroupid">The name or id of the repo group to revoke permissions from.</param>
+        /// <param name="usergroupid">The id of the user group to revoke permissions.</param>
+        /// <param name="apply_to_children">Whether to apply these updates to children of specified type. (none|repos|groups|all)</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response revoke_user_group_permission_from_repo_group(string repogroupid, string usergroupid, string apply_to_children = "none")
+        {
+            // Build arguments.
+            revoke_user_group_permission_from_repo_group_args args;
+            args.repogroupid = repogroupid;
+            args.usergroupid = usergroupid;
+            args.apply_to_children = apply_to_children;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "revoke_user_group_permission_from_repo_group";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
 
         /*
          * Arguments for the API calls.
@@ -1115,6 +1170,21 @@ namespace Kallithea_NET_API
         {
             public string repogroupid;
             public string userid;
+            public string apply_to_children;
+        }
+
+        private struct grant_user_group_permission_to_repo_group_args
+        {
+            public string repogroupid;
+            public string usergroupid;
+            public string perm;
+            public string apply_to_children;
+        }
+
+        private struct revoke_user_group_permission_from_repo_group_args
+        {
+            public string repogroupid;
+            public string usergroupid;
             public string apply_to_children;
         }
     }

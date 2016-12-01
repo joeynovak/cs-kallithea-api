@@ -636,15 +636,55 @@ namespace Test_Kallithea_NET_API
             }
 
 
+            // Unit Test: Grant User Group Permissions To Repo Group
+            //
+            try
+            {
+                currentTest = "Grant User Group Permissions To Repo Group";
+
+                response = local.grant_user_group_permission_to_repo_group(rgid.ToString(), ugid.ToString(), "group.admin");
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
+                response grantUserGroupPermToRepoGroupResults = response.deserialize_grant_user_group_permissions_to_repo_group();
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
+
+
 
 
             // This is when everything is done and not undone.  Break here if needed to verify.
             while (false) ;
 
 
+            // Unit Test: Revoke User Group Permissions From Repo Group
+            //
+            try
+            {
+                currentTest = "Revoke User Group Permissions From Repo Group";
+
+                response = local.revoke_user_group_permission_from_repo_group(rgid.ToString(), ugid.ToString());
+
+                if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+
+                response revokeUserGroupPermFromRepoGroupResults = response.deserialize_revoke_user_group_permissions_from_repo_group();
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
 
 
-            // Unit Test: Revoke User Permissions To Repo Group
+            // Unit Test: Revoke User Permissions From Repo Group
             //
             try
             {
