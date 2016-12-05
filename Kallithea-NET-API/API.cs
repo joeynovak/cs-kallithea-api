@@ -182,6 +182,14 @@ namespace Kallithea_NET_API
                 return new repository_message();
         }
 
+        public update_repository_message deserialize_update_repo()
+        {
+            if (result != null)
+                return JsonConvert.DeserializeObject<update_repository_message>(result.ToString());
+            else
+                return new update_repository_message();
+        }
+
         public response deserialize_fork_repo()
         {
             if (result != null)
@@ -358,6 +366,11 @@ namespace Kallithea_NET_API
         public string msg;
         public bool success;
         public string task;
+    }
+    public struct update_repository_message
+    {
+        public string msg;
+        public Repository_All repository;
     }
 
     public struct repository_group_message

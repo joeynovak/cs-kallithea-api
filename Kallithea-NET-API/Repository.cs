@@ -121,5 +121,25 @@ namespace Kallithea_NET_API
         public string origin;
     }
 
+    /// <summary>
+    /// Data structure used by:
+    /// 
+    /// update_repo
+    /// </summary>
+    public class Repository_Update
+    {
+        public string repoid;                      // Required.
+        public string name = null;                 // Optional. (null)
+        public string owner = null;                // Optional. (null)
+        public string group = null;                // Optional. (null)
+        public string description = null;          // Optional. (null)
+        public bool? @private = null;              // Optional. (null)
+        public string clone_uri = null;            // Optional. (null)
+        public string landing_rev = null;          // Optional. (null)
+        public bool? enable_downloads = null;      // Optional. (null)
+        public bool? enable_locking = null;        // Optional. (null)
+        public bool? enable_statistics = null;     // Optional. (null)
+    }
+
 
 }

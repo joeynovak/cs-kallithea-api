@@ -550,6 +550,43 @@ namespace Kallithea_NET_API
         }
 
         /// <summary>
+        /// Updates a repository. If repository name contains “/”, all needed 
+        /// repository groups will be created. For example “foo/bar/baz” will 
+        /// create groups “foo”, “bar” (with “foo” as parent), and create “baz” 
+        /// repository with “bar” as group. This command can be executed only 
+        /// using api_key belonging to user with admin rights or regular user 
+        /// that have create repository permission. Regular users cannot specify
+        /// owner parameter.
+        /// </summary>
+        /// <param name="update">A Repository object to be updated.</param>
+        /// <returns>API_Response containing results of operation.</returns>
+        public API_Response update_repo(Repository_Update update)
+        {
+            // Build arguments.
+            update_repo_args args;
+            args.repoid = update.repoid;
+            args.name = update.name;
+            args.owner = update.owner;
+            args.group = update.group;
+            args.description = update.description;
+            args.@private = update.@private;
+            args.clone_uri = update.clone_uri;
+            args.landing_rev = update.landing_rev;
+            args.enable_downloads = update.enable_downloads;
+            args.enable_locking = update.enable_locking;
+            args.enable_statistics = update.enable_statistics;
+
+            // Create the request.
+            API_Request request = new API_Request();
+            request.method = "update_repo";
+            request.api_key = api_key;
+            request.args = args;
+
+            // Send the request and return response.
+            return API_Call(request);
+        }
+
+        /// <summary>
         /// Creates a fork of given repo. In case of using celery this will immidiatelly return success 
         /// message, while fork is going to be created asynchronous. This command can be executed only 
         /// using api_key belonging to user with admin rights or regular user that have fork permission, 
@@ -1071,7 +1108,34 @@ namespace Kallithea_NET_API
             public bool ShouldSerializeowner() { return owner != "apiuser"; }
             public bool ShouldSerializeclone_uri() { return clone_uri != null; }
         }
-       
+
+        // Conditional Serialization
+        private struct update_repo_args
+        {
+            public string repoid;
+            public string name;
+            public string owner;
+            public string group;
+            public string description;
+            public bool? @private;
+            public string clone_uri;
+            public string landing_rev;
+            public bool? enable_downloads;
+            public bool? enable_locking;
+            public bool? enable_statistics;
+
+            public bool ShouldSerializename() { return name != null; }
+            public bool ShouldSerializeowner() { return owner != null; }
+            public bool ShouldSerializegroup() { return group != null; }
+            public bool ShouldSerializedescription() { return description != null; }
+            public bool ShouldSerializeprivate() { return @private != null; }
+            public bool ShouldSerializeclone_uri() { return clone_uri != null; }
+            public bool ShouldSerializelanding_rev() { return landing_rev != null; }
+            public bool ShouldSerializeenable_statistics() { return enable_statistics != null; }
+            public bool ShouldSerializeenable_locking() { return enable_locking != null; }
+            public bool ShouldSerializeenable_downloads() { return enable_downloads != null; }
+        }
+
         // Conditional Serialization
         private struct fork_repo_args
         {

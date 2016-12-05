@@ -33,6 +33,7 @@ namespace Test_Kallithea_NET_API
             int uid = 0;
             int ugid = 0;
             int rgid = 0;
+            int rid = 0;
 
 
 
@@ -349,6 +350,8 @@ namespace Test_Kallithea_NET_API
 
                 Repository_Full getRepoResult = response.deserialize_get_repo();
 
+                rid = getRepoResult.repo_id;
+
                 if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
             }
@@ -369,6 +372,42 @@ namespace Test_Kallithea_NET_API
                 if (response.result != null) Console.WriteLine(response.result.ToString()); else Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString()); 
 
                 Repository_All[] getReposResult = response.deserialize_get_repos();
+
+                if (response.error != null) currentError = response.error.ToString(); else currentError = "";
+                unitTestResults.Add(currentTest, currentError);
+            }
+            catch (Exception e)
+            {
+                unitTestResults.Add(currentTest, e.Message.ToString());
+            }
+
+
+            // Unit Test: Update Repo
+            //
+            try
+            {
+                currentTest = "Update Repo";
+
+                Repository_Update updateRepo = new Repository_Update();
+                updateRepo.repoid = rid.ToString();
+                updateRepo.description = "UnitTest Repository - Please Delete Me";
+                updateRepo.owner = "bjones";
+
+                response = local.update_repo(updateRepo);
+
+                if (response.result == null)
+                {
+                    Console.WriteLine("Error running " + currentTest + " test: " + response.error.ToString());
+                }
+                else
+                {
+                    Console.WriteLine(response.result.ToString());
+
+                    update_repository_message repoUpdateResult = response.deserialize_update_repo();
+
+                    Debug.Assert(repoUpdateResult.repository.description == updateRepo.description, "UpdateRepo.description assertion failed! Expected: '" + updateRepo.description.ToString() + "'  Actual'" + repoUpdateResult.repository.description.ToString() + "'");
+                }
+                
 
                 if (response.error != null) currentError = response.error.ToString(); else currentError = "";
                 unitTestResults.Add(currentTest, currentError);
@@ -745,14 +784,6 @@ namespace Test_Kallithea_NET_API
             {
                 unitTestResults.Add(currentTest, e.Message.ToString());
             }
-
-            //
-            //
-            //
-            //
-            //
-            //
-            // UPDATE REPO HERE
 
 
             // Unit Test: Delete Repo Group
