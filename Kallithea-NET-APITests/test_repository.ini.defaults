@@ -1,1 +1,5 @@
-﻿
+﻿[Kallithea]
+Url=http://127.0.0.1
+AdminApiKey=asdflkj
+RegularApiKey=;lkjasdf
+IgnoreCertificateErrors=false

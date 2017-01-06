@@ -1,23 +1,24 @@
 ﻿using System;
+using Kallithea_NET_API;
 using Newtonsoft.Json;
 
-namespace Kallithea_NET_API
+namespace KallitheaNetApi
 {
     public class Kallithea
     {
-        private string host;
+        private string _url;
         private string api_key;
 
         /// <summary>
         /// Used to connect and execute API calls to a Kallithea server.
         /// </summary>
         ///
-        /// <param name="api_key">An API Key belonging to a user with admin privileges.</param>
-        /// <param name="host">The location of the Kallithea server.  Include /_admin/api on the end.</param>
-        public Kallithea(string host, string api_key)
+        /// <param name="apiKey">An API Key belonging to a user with admin privileges.</param>
+        /// <param name="url">The location of the Kallithea server.  Include /_admin/api on the end.</param>
+        public Kallithea(string url, string apiKey)
         {
-            this.host = host;
-            this.api_key = api_key;
+            this._url = url;
+            this.api_key = apiKey;
         }
 
         /// <summary>
@@ -38,7 +39,7 @@ namespace Kallithea_NET_API
             json_request = json_request.Replace("\\\"", "\"").Replace("\"args\":\"", "\"args\":").Replace("}\"}", "}}");
 
             // Send the request, store response.
-            string json_response = Request.HttpPost(host, json_request);
+            string json_response = Request.HttpPost(_url + "_admin/api", json_request);
 
             // Deserialize the response and return it.
             return JsonConvert.DeserializeObject<API_Response>(json_response);
