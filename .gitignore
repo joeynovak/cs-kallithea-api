@@ -4,3 +4,4 @@ syntax: glob
 packages
 test_repository.ini
 .vs
+*.nupkg

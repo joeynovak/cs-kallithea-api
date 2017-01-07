@@ -1,0 +1,2 @@
+nuget pack KallitheaNetApi.csproj
+pause

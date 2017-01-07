@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+   <metadata>
+      <id>$id$</id>
+      <version>$version$</version>
+      <title>$title$</title>
+      <authors>Joey Novak, Brandon Jones</authors>
+      <owners>$author$</owners>
+      <projectUrl>https://github.com/joeynovak/cs-kallithea-api</projectUrl>
+      <requireLicenseAcceptance>false</requireLicenseAcceptance>
+      <description>This is a fork of Brandon Jones (https://bitbucket.org/bjones14/) work, packaged for nuget.</description>
+      <releaseNotes>Initial Release</releaseNotes>
+      <copyright>Copyright 2017</copyright>
+      <tags>Kallithea, Rest API, hg, mercurial</tags>      
+   </metadata>
+</package>

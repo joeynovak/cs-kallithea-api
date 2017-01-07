@@ -60,7 +60,7 @@
     <Compile Include="Settings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Kallithea-NET-API\Kallithea-NET-API.csproj">
+    <ProjectReference Include="..\KallitheaNetApi\KallitheaNetApi.csproj">
       <Project>{EBF90513-FA10-4CB9-A03D-29047FEFFAD9}</Project>
       <Name>Kallithea-NET-API</Name>
     </ProjectReference>
