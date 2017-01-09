@@ -1,4 +1,4 @@
-﻿namespace Kallithea_NET_API
+﻿namespace KallitheaNetApi
 {
    /// <summary>
    /// Used to store either user or user_group member object.
@@ -6,7 +6,7 @@
    /// 
    /// get_repo
    /// </summary>
-   public class Repository_Member
+   public class RepositoryMember
    {
       // Used by both types.
       public string type;                    

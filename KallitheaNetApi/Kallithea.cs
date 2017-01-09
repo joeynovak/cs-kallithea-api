@@ -1,13 +1,14 @@
 ﻿using System;
-using Kallithea_NET_API;
+using System.Collections.Generic;
+using KallitheaNetApi.Responses;
 using Newtonsoft.Json;
 
 namespace KallitheaNetApi
 {
     public class Kallithea
     {
-        private string _url;
-        private string api_key;
+        private readonly string _url;
+        private readonly string _apiKey;
 
         /// <summary>
         /// Used to connect and execute API calls to a Kallithea server.
@@ -18,7 +19,7 @@ namespace KallitheaNetApi
         public Kallithea(string url, string apiKey)
         {
             this._url = url;
-            this.api_key = apiKey;
+            this._apiKey = apiKey;
         }
 
         /// <summary>
@@ -26,23 +27,23 @@ namespace KallitheaNetApi
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        private API_Response API_Call(API_Request request)
-        {
+        private ApiResponse<T> Call<T>(ApiRequest request)
+      {
             // Create and set Request ID.
             Random rand = new Random();
             request.id = rand.Next(1, 1000);
 
             // Serialize to JSON.
-            string json_request = JsonConvert.SerializeObject(request);
+            string jsonRequest = JsonConvert.SerializeObject(request);
 
             // Need to clean up the args a bit.
-            json_request = json_request.Replace("\\\"", "\"").Replace("\"args\":\"", "\"args\":").Replace("}\"}", "}}");
+            jsonRequest = jsonRequest.Replace("\\\"", "\"").Replace("\"args\":\"", "\"args\":").Replace("}\"}", "}}");
 
             // Send the request, store response.
-            string json_response = Request.HttpPost(_url + "_admin/api", json_request);
+            string jsonResponse = Request.HttpPost(_url + "_admin/api", jsonRequest);
 
             // Deserialize the response and return it.
-            return JsonConvert.DeserializeObject<API_Response>(json_response);
+            return JsonConvert.DeserializeObject<ApiResponse<T>>(jsonResponse);
         }
 
         /// <summary>
@@ -53,20 +54,22 @@ namespace KallitheaNetApi
         /// 
         /// <param name="repo">reponame or repo_id.</param>
         /// <returns>A string containing results of operation.</returns>
-        public API_Response pull(string repo)
+        public ApiResponse<Pull> Pull(string repo)
         {
             // Build the arguments
-            pull_args args;
+            PullArgs args;
             args.repoid = repo;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "pull";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "pull",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<Pull>(request);
         }
 
         /// <summary>
@@ -77,20 +80,22 @@ namespace KallitheaNetApi
         /// 
         /// <param name="remove_obselete">Used to delete repos that are in the database but not the filesystem.</param>
         /// <returns>A struct containing an array of added and removed repositories.</returns>
-        public API_Response rescan_repos(bool remove_obselete = false)
+        public ApiResponse<RescanRepos> RescanRepos(bool remove_obselete = false)
         {
             // Build the arguments
-            rescan_args args;
+            RescanArgs args;
             args.remove_obselete = remove_obselete;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "rescan_repos";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "rescan_repos",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<RescanRepos>(request);
         }
 
         /// <summary>
@@ -100,20 +105,22 @@ namespace KallitheaNetApi
         /// 
         /// <param name="repo">reponame or repo_id.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response invalidate_cache(string repo)
+        public ApiResponse<InvalidateCache> invalidate_cache(string repo)
         {
             // Build the arguments
-            invalidate_args args;
+            InvalidateArgs args;
             args.repoid = repo;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "invalidate_cache";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "invalidate_cache",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<InvalidateCache>(request);
         }
 
         /// <summary>
@@ -127,22 +134,24 @@ namespace KallitheaNetApi
         /// <param name="user">username or user_id.</param>
         /// <param name="locked">Locked (true) | Unlocked (false)</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response lock_repo(string repo, bool? locked = null, string user = "_apiuser_")
+        public ApiResponse<GenericApiResponse> lock_repo(string repo, bool? locked = null, string user = "_apiuser_")
         {
             // Build arguments.
-            lock_args args;
+            LockArgs args;
             args.repoid = repo;
             args.userid = user;
             args.locked = locked;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "lock";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "lock",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -152,20 +161,22 @@ namespace KallitheaNetApi
         /// 
         /// <param name="user">username or user_id.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_ip(string user)
+        public ApiResponse<GetIp> GetIp(string user)
         {
             // Build the arguments
-            get_ip_args args;
+            GetIpArgs args;
             args.userid = user;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "get_ip";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "get_ip",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GetIp>(request);
         }
 
         /// <summary>
@@ -177,23 +188,25 @@ namespace KallitheaNetApi
         /// 
         /// <param name="user">username or user_id.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_user(string user = "_apiuser_")
+        public ApiResponse<GenericApiResponse> GetUser(string user = "_apiuser_")
         {
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "get_user";
-            request.api_key = api_key;
+           ApiRequest request = new ApiRequest
+           {
+              method = "get_user",
+              api_key = _apiKey
+           };
 
-            if (user != "_apiuser_")
+           if (user != "_apiuser_")
             {
-                get_user_args args;
+                GetUserArgs args;
                 args.userid = user;
 
                 request.args = args;
             }
 
             // Send the request and return response.
-            return API_Call(request);
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -202,15 +215,17 @@ namespace KallitheaNetApi
         /// </summary>
         /// 
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_users()
+        public ApiResponse<GenericApiResponse> GetUsers()
         {
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "get_users";
-            request.api_key = api_key;
+           ApiRequest request = new ApiRequest
+           {
+              method = "get_users",
+              api_key = _apiKey
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -220,27 +235,29 @@ namespace KallitheaNetApi
         /// 
         /// <param name="create">The User_Create object to create a user.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response create_user(User_Create create)
+        public ApiResponse<GenericApiResponse> CreateUser(UserCreate create)
         {
             // Build the arguments
-            create_user_args args;
-            args.active = create.active;
-            args.admin = create.admin;
-            args.email = create.email;
-            args.firstname = create.firstname;
-            args.lastname = create.lastname;
-            args.ldap_dn = create.ldap_dn;
-            args.password = create.password;
-            args.username = create.username;
+            CreateUserArgs args;
+            args.active = create.Active;
+            args.admin = create.Admin;
+            args.email = create.Email;
+            args.firstname = create.Firstname;
+            args.lastname = create.Lastname;
+            args.ldap_dn = create.LdapDn;
+            args.password = create.Password;
+            args.username = create.Username;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "create_user";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "create_user",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -251,28 +268,32 @@ namespace KallitheaNetApi
         /// 
         /// <param name="update">The User_Create object to modify a user.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response update_user(User_Update update)
+        public ApiResponse<GenericApiResponse> UpdateUser(Requests.UserUpdate update)
         {
             // Build the arguments
-            update_user_args args = new update_user_args();
-            args.active = update.active;
-            args.admin = update.admin;
-            args.email = update.email;
-            args.firstname = update.firstname;
-            args.lastname = update.lastname;
-            args.ldap_dn = update.ldap_dn;
-            args.password = update.password;
-            args.username = update.username;
-            args.userid = update.userid;
+           UpdateUserArgs args = new UpdateUserArgs
+           {
+              active = update.Active,
+              admin = update.Admin,
+              email = update.Email,
+              firstname = update.Firstname,
+              lastname = update.Lastname,
+              ldap_dn = update.LdapDn,
+              password = update.Password,
+              username = update.Username,
+              userid = update.Userid
+           };
 
-            // Create the request.
-            API_Request request = new API_Request();
-            request.method = "update_user";
-            request.api_key = api_key;
-            request.args = args;
+           // Create the request.
+           ApiRequest request = new ApiRequest
+           {
+              method = "update_user",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -282,20 +303,22 @@ namespace KallitheaNetApi
         /// </summary>
         /// <param name="user">The userid or username of the user to delete.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response delete_user(string user)
+        public ApiResponse<GenericApiResponse> DeleteUser(string user)
         {
             // Build the arguments
-            delete_user_args args;
+            DeleteUserArgs args;
             args.userid = user;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "delete_user";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "delete_user",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -305,20 +328,22 @@ namespace KallitheaNetApi
         /// </summary>
         /// <param name="usergroup"></param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_user_group(string usergroup)
+        public ApiResponse<GenericApiResponse> get_user_group(string usergroup)
         {
             // Build the arguments
-            get_user_group_args args;
+            GetUserGroupArgs args;
             args.usergroupid = usergroup;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "get_user_group";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "get_user_group",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -327,15 +352,17 @@ namespace KallitheaNetApi
         /// to user with admin rights.
         /// </summary>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_user_groups()
+        public ApiResponse<GenericApiResponse> get_user_groups()
         {
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "get_user_groups";
-            request.api_key = api_key;
+           ApiRequest request = new ApiRequest
+           {
+              method = "get_user_groups",
+              api_key = _apiKey
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -347,22 +374,24 @@ namespace KallitheaNetApi
         /// <param name="active">If the group is active.  Default(True)</param>
         /// <param name="owner">The owner of the group.  Default(=apiuser)</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response create_user_group(string group_name, string owner = "_apiuser_", bool active = true)
+        public ApiResponse<GenericApiResponse> create_user_group(string group_name, string owner = "_apiuser_", bool active = true)
         {
             // Build the arguments.
-            create_user_group_args args = new create_user_group_args();
+            CreateUserGroupArgs args = new CreateUserGroupArgs();
             args.group_name = group_name;
             args.active = active;
             args.owner = owner;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "create_user_group";
-            request.api_key = api_key;
-            request.args = args;
-         
-            // Send the request and return response.
-            return API_Call(request);
+           ApiRequest request = new ApiRequest
+           {
+              method = "create_user_group",
+              api_key = _apiKey,
+              args = args
+           };
+
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -373,21 +402,23 @@ namespace KallitheaNetApi
         /// <param name="usergroup">user group id or name</param>
         /// <param name="user">user id or username</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response add_user_to_user_group(string usergroup, string user)
+        public ApiResponse<GenericApiResponse> add_user_to_user_group(string usergroup, string user)
         {
             // Build the arguments
-            edit_user_group_args args;
+            EditUserGroupArgs args;
             args.usersgroupid = usergroup;
             args.userid = user;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "add_user_to_user_group";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "add_user_to_user_group",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -398,21 +429,23 @@ namespace KallitheaNetApi
         /// <param name="usergroup">user group id or name</param>
         /// <param name="user">user id or username</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response remove_user_from_user_group(string usergroup, string user)
+        public ApiResponse<GenericApiResponse> remove_user_from_user_group(string usergroup, string user)
         {
             // Build the arguments
-            edit_user_group_args args;
+            EditUserGroupArgs args;
             args.usersgroupid = usergroup;
             args.userid = user;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "remove_user_from_user_group";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "remove_user_from_user_group",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -424,20 +457,22 @@ namespace KallitheaNetApi
         /// </summary>
         /// <param name="reponame">reponame or repo_id</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_repo(string repo)
+        public ApiResponse<GenericApiResponse> get_repo(string repo)
         {
             // Build the arguments
-            get_repo_args args;
+            GetRepoArgs args;
             args.repoid = repo;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "get_repo";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "get_repo",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -447,15 +482,17 @@ namespace KallitheaNetApi
         /// or read access to repository.
         /// </summary>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_repos()
+        public ApiResponse<List<GetReposRepository>> GetRepos()
         {
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "get_repos";
-            request.api_key = api_key;
+           ApiRequest request = new ApiRequest
+           {
+              method = "get_repos",
+              api_key = _apiKey
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<List<GetReposRepository>>(request);
         }
 
         /// <summary>
@@ -469,23 +506,25 @@ namespace KallitheaNetApi
         /// <param name="root_path">The root path of the repository.</param>
         /// <param name="ret_type">The return type of the call. (Default: all)</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response get_repo_nodes(string repo, int revision, string root_path, string ret_type = "all")
+        public ApiResponse<GenericApiResponse> get_repo_nodes(string repo, int revision, string root_path, string ret_type = "all")
         {
             // Build the arguments
-            get_repo_nodes_args args;
+            GetRepoNodesArgs args;
             args.repoid = repo;
             args.revision = revision;
             args.root_path = root_path;
             args.ret_type = ret_type;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "get_repo_nodes";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "get_repo_nodes",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -499,10 +538,10 @@ namespace KallitheaNetApi
         /// </summary>
         /// <param name="create">A Repository object to be created.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response create_repo(Repository create)
+        public ApiResponse<GenericApiResponse> CreateRepo(Repository create)
         {
             // Build arguments.
-            create_repo_args args;
+            CreateRepoArgs args;
             args.repo_name = create.repo_name;
             args.owner = create.owner;
             args.repo_type = create.repo_type;
@@ -515,13 +554,15 @@ namespace KallitheaNetApi
             args.enable_statistics = create.enable_statistics;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "create_repo";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "create_repo",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -538,10 +579,10 @@ namespace KallitheaNetApi
         /// <param name="private">Private repository visibility.</param>
         /// <param name="landing_rev">Revisions to display on statistics page.  (ex. 'tip')</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response fork_repo(string repo, string fork_name, string description, bool copy_permissions, bool @private, string landing_rev, string owner = "_apiuser_")
+        public ApiResponse<GenericApiResponse> fork_repo(string repo, string fork_name, string description, bool copy_permissions, bool @private, string landing_rev, string owner = "_apiuser_")
         {
             // Build arguments.
-            fork_repo_args args;
+            ForkRepoArgs args;
             args.repoid = repo;
             args.fork_name = fork_name;
             args.description = description;
@@ -551,13 +592,15 @@ namespace KallitheaNetApi
             args.owner = owner;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "fork_repo";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "fork_repo",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -568,21 +611,23 @@ namespace KallitheaNetApi
         /// <param name="repo">The reponame or repo_id of the repository to delete.</param>
         /// <param name="forks">'delete' or 'detach' all forks.  Default(None)</param>
         /// <returns></returns>
-        public API_Response delete_repo(string repo, string forks = null)
+        public ApiResponse<GenericApiResponse> delete_repo(string repo, string forks = null)
         {
             // Build arguments.
-            delete_repo_args args;
+            DeleteRepoArgs args;
             args.repoid = repo;
             args.forks = forks;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "delete_repo";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "delete_repo",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -593,22 +638,24 @@ namespace KallitheaNetApi
         /// <param name="user">The username or user_id of the user.</param>
         /// <param name="perm">repository.(none|read|write|admin) permissions to grant.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response grant_user_permission(string repo, string user, string perm)
+        public ApiResponse<GenericApiResponse> grant_user_permission(string repo, string user, string perm)
         {
             // Build arguments.
-            grant_user_permission_args args;
+            GrantUserPermissionArgs args;
             args.repoid = repo;
             args.userid = user;
             args.perm = perm;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "grant_user_permission";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "grant_user_permission",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -618,21 +665,23 @@ namespace KallitheaNetApi
         /// <param name="repo">The reponame or repo_id of the repository.</param>
         /// <param name="user">The username or user_id of the user.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response revoke_user_permission(string repo, string user)
+        public ApiResponse<GenericApiResponse> revoke_user_permission(string repo, string user)
         {
             // Build arguments.
-            revoke_user_permission_args args;
+            RevokeUserPermissionArgs args;
             args.repoid = repo;
             args.userid = user;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "revoke_user_permission";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "revoke_user_permission",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -644,22 +693,24 @@ namespace KallitheaNetApi
         /// <param name="usergroup">The user group id or name.</param>
         /// <param name="perm">repository.(none|read|write|admin) permissions to grant.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response grant_user_group_permission(string repo, string usergroup, string perm)
+        public ApiResponse<GenericApiResponse> grant_user_group_permission(string repo, string usergroup, string perm)
         {
             // Build arguments.
-            grant_user_group_permission_args args;
+            GrantUserGroupPermissionArgs args;
             args.repoid = repo;
             args.usersgroupid = usergroup;
             args.perm = perm;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "grant_user_group_permission";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "grant_user_group_permission",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /// <summary>
@@ -669,34 +720,36 @@ namespace KallitheaNetApi
         /// <param name="repo">The reponame or repo_id of the repository.</param>
         /// <param name="usergroup">The user group id or name.</param>
         /// <returns>API_Response containing results of operation.</returns>
-        public API_Response revoke_user_group_permission(string repo, string usergroup)
+        public ApiResponse<GenericApiResponse> revoke_user_group_permission(string repo, string usergroup)
         {
             // Build arguments.
-            revoke_user_group_permission_args args;
+            RevokeUserGroupPermissionArgs args;
             args.repoid = repo;
             args.usersgroupid = usergroup;
 
             // Create the request.
-            API_Request request = new API_Request();
-            request.method = "revoke_user_group_permission";
-            request.api_key = api_key;
-            request.args = args;
+           ApiRequest request = new ApiRequest
+           {
+              method = "revoke_user_group_permission",
+              api_key = _apiKey,
+              args = args
+           };
 
-            // Send the request and return response.
-            return API_Call(request);
+           // Send the request and return response.
+            return Call<GenericApiResponse>(request);
         }
 
         /*
          * Arguments for the API calls.
          */
-        private struct pull_args { public string repoid; }
+        public struct PullArgs { public string repoid; }
        
-        private struct rescan_args { public bool remove_obselete; }
+        public struct RescanArgs { public bool remove_obselete; }
         
-        private struct invalidate_args { public string repoid; }
+        public struct InvalidateArgs { public string repoid; }
        
         // Conditional Serialization
-        private struct lock_args 
+        public struct LockArgs 
         { 
             public string repoid; 
             public string userid; 
@@ -706,11 +759,11 @@ namespace KallitheaNetApi
             public bool ShouldSerializelocked() { return locked != null; }
         }
        
-        private struct get_ip_args { public string userid; }
+        public struct GetIpArgs { public string userid; }
         
-        private struct get_user_args { public string userid; }
+        public struct GetUserArgs { public string userid; }
         
-        private struct create_user_args
+        public struct CreateUserArgs
         {
             public string username;
             public string email;
@@ -723,7 +776,7 @@ namespace KallitheaNetApi
         }
         
         // Conditional Serialization
-        private struct update_user_args
+        public struct UpdateUserArgs
         {
             public int userid;
             public string username;
@@ -745,12 +798,12 @@ namespace KallitheaNetApi
             public bool ShouldSerializeldap_dn() { return ldap_dn != null; }
         }
 
-        private struct delete_user_args { public string userid; }
+        public struct DeleteUserArgs { public string userid; }
         
-        private struct get_user_group_args { public string usergroupid; }
+        public struct GetUserGroupArgs { public string usergroupid; }
        
         // Conditional Serialization
-        private struct create_user_group_args 
+        public struct CreateUserGroupArgs 
         { 
             public string group_name; 
             public string owner; 
@@ -760,31 +813,47 @@ namespace KallitheaNetApi
             public bool ShouldSerializeactive() { return active != null; }
         }
        
-        private struct edit_user_group_args { public string usersgroupid; public string userid; }
-       
-        private struct get_repo_args { public string repoid; }
-       
-        private struct get_repo_nodes_args { public string repoid; public int revision; public string root_path; public string ret_type; }
-        
-        // Conditional Serialization
-        private struct create_repo_args
+        public struct EditUserGroupArgs { public string usersgroupid; public string userid; }
+
+      public struct GetRepoArgs { public string repoid; }
+
+      public struct GetRepoNodesArgs { public string repoid; public int revision; public string root_path; public string ret_type; }
+
+      // Conditional Serialization
+      public struct CreateRepoArgs
         {
             public string repo_name;
-            public string owner;
-            public string repo_type;
-            public string description;
-            public bool @private;
-            public string clone_uri;
-            public string landing_rev;
-            public bool enable_downloads;
-            public bool enable_locking;
-            public bool enable_statistics;
 
-            public bool ShouldSerializeowner() { return owner != "_apiuser_"; }
+         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+         public string owner;
+
+         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+         public string repo_type;
+
+         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+         public string description;
+
+         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+         public bool ? @private;
+
+         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+         public string clone_uri;
+
+         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+         public string landing_rev;
+
+         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+         public bool ? enable_downloads;
+
+         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+         public bool ? enable_locking;
+
+         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+         public bool ? enable_statistics;            
         }
-       
-        // Conditional Serialization
-        private struct fork_repo_args
+
+      // Conditional Serialization
+      public struct ForkRepoArgs
         {
             public string repoid;
             public string fork_name;
@@ -797,8 +866,8 @@ namespace KallitheaNetApi
             public bool ShouldSerializeowner() { return owner != "_apiuser_"; }
         }
 
-        // Conditional Serialization
-        private struct delete_repo_args
+      // Conditional Serialization
+      public struct DeleteRepoArgs
         {
             public string repoid;
             public string forks;
@@ -806,12 +875,45 @@ namespace KallitheaNetApi
             public bool ShouldSerializeforks() { return forks != null; }
         }
 
-        private struct grant_user_permission_args { public string repoid; public string userid; public string perm; }
+      public struct GrantUserPermissionArgs { public string repoid; public string userid; public string perm; }
 
-        private struct revoke_user_permission_args { public string repoid; public string userid; }
+      public struct RevokeUserPermissionArgs { public string repoid; public string userid; }
 
-        private struct grant_user_group_permission_args { public string repoid; public string usersgroupid; public string perm; }
+      public struct GrantUserGroupPermissionArgs { public string repoid; public string usersgroupid; public string perm; }
 
-        private struct revoke_user_group_permission_args { public string repoid; public string usersgroupid; }
+      public struct RevokeUserGroupPermissionArgs { public string repoid; public string usersgroupid; }
     }
+
+   public class GetReposResponse : RequestSpecificResponseData
+   {
+      public GetReposRepository[] Repositories;
+   }
+
+   public class GetReposRepository
+   {
+      public string repo_type;
+      public string description;
+      public bool @private;
+      public RepositoryChangeset last_changeset;
+      public string created_on;
+      public string fork_of;
+      public bool enabled_locking;
+      public string owner;
+      public string locked_date;
+      public string[] landing_rev;
+      public bool enable_downloads;
+      public bool enable_statistics;
+      public string locked_by;
+      public string clone_uri;
+      public int repo_id;
+      public string repo_name;
+   }
+
+   public class GenericApiResponse : RequestSpecificResponseData
+   {
+   }
+
+   public class InvalidateCache : RequestSpecificResponseData
+   {
+   }
 }

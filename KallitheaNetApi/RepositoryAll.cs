@@ -1,11 +1,11 @@
-﻿namespace Kallithea_NET_API
+﻿namespace KallitheaNetApi
 {
    /// <summary>
    /// Data structure used by:
    /// 
    /// get_repos
    /// </summary>
-   public class Repository_All
+   public class RepositoryAll
    {
       public string repo_name;                                // Required.
       public string owner = "_apiuser_";                      // Optional. (_apiuser_)

@@ -6,7 +6,7 @@
     <ProjectGuid>{C94F871D-8E40-4DDE-B1ED-B865A11914CF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Kallithea_NET_APITests</RootNamespace>
+    <RootNamespace>KallitheaNetApi.Tests</RootNamespace>
     <AssemblyName>Kallithea-NET-APITests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

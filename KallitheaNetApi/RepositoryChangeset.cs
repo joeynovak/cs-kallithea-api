@@ -1,17 +1,17 @@
-﻿namespace Kallithea_NET_API
+﻿namespace KallitheaNetApi
 {
    /// <summary>
    /// Data structure used by:
    /// 
    /// get_repo
    /// </summary>
-   public class Repository_Changeset
+   public class RepositoryChangeset
    {
       public string author;
       public string date;
       public string message;
-      public int raw_id;
+      public string raw_id;
       public int revision;
-      public int short_id;
+      public string short_id;
    }
 }

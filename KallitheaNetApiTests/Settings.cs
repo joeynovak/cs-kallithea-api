@@ -2,7 +2,7 @@
 using IniParser;
 using IniParser.Model;
 
-namespace Kallithea_NET_API.Tests
+namespace KallitheaNetApi.Tests
 {
    public class Settings
    {

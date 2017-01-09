@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 /**
  * This class contains all the request and response
  * data structures for User related calls. 
  */
-namespace Kallithea_NET_API
+namespace KallitheaNetApi
 {
     /// <summary>
     /// Data structure used by:
@@ -14,27 +15,49 @@ namespace Kallithea_NET_API
     /// </summary>
     public class User
     {
-        public int user_id;
-        public string api_key;
-        public string username;
-        public string firstname;
-        public string lastname;
-        public string email;
-        public string[] emails;
-        public bool active;
-        public bool admin;
-        public string ldap_dn;
-        public string last_login;
-    }
+      [JsonProperty("user_id")]
+      public int UserId;
+
+      [JsonProperty("api_key")]
+      public string ApiKey;
+
+      [JsonProperty("username")]
+      public string Username;
+
+      [JsonProperty("firstname")]
+      public string Firstname;
+
+      [JsonProperty("lastname")]
+      public string Lastname;
+
+      [JsonProperty("email")]
+      public string Email;
+
+      [JsonProperty("emails")]
+      public string[] Emails;
+
+      [JsonProperty("active")]
+      public bool Active;
+
+      [JsonProperty("admin")]
+      public bool Admin;
+
+      [JsonProperty("ldap_dn")]
+      public string LdapDn;
+
+      [JsonProperty("last_login")]
+      public string LastLogin;
+      }
 
     /// <summary>
     /// Data structure used by:
     /// 
     /// get_user
     /// </summary>
-    public class User_Extended : User
+    public class UserExtended : User
     {
-        public string[] ip_addresses;
+      [JsonProperty("ip_addresses")]
+      public string[] IpAddresses;
     }
 
     /// <summary>
@@ -42,9 +65,10 @@ namespace Kallithea_NET_API
     /// 
     /// get_users
     /// </summary>
-    public class User_Full : User_Extended
+    public class UserFull : UserExtended
     {
-        public User_Permission permissions;
+      [JsonProperty("permissions")]
+      public User_Permission UserPermissions;
     }
 
     /// <summary>
@@ -52,37 +76,34 @@ namespace Kallithea_NET_API
     ///
     /// create_user
     /// </summary>
-    public class User_Create
+    public class UserCreate
     {
-        public string username;         // Required
-        public string email;            // Required
-        public string password = "";    // Optional ("")
-        public string firstname = "";   // Optional ("")
-        public string lastname = "";    // Optional ("")
-        public bool active = true;      // Optional (false)
-        public bool admin = false;      // Optional (false)
-        public string ldap_dn = "";     // Optional ("")
+      [JsonProperty("username")]
+      public string Username;         // Required
+
+      [JsonProperty("email")]
+      public string Email;            // Required
+
+      [JsonProperty("password")]
+      public string Password = "";    // Optional ("")
+
+      [JsonProperty("firstname")]
+      public string Firstname = "";   // Optional ("")
+
+      [JsonProperty("lastname")]
+      public string Lastname = "";    // Optional ("")
+
+      [JsonProperty("active")]
+      public bool Active = true;      // Optional (false)
+
+      [JsonProperty("admin")]
+      public bool Admin = false;      // Optional (false)
+
+      [JsonProperty("ldap_dn")]
+      public string LdapDn = "";     // Optional ("")
     }
 
-    /// <summary>
-    /// Data structure used by:
-    ///
-    /// update_user
-    /// </summary>
-    public class User_Update
-    {
-        public int userid;              // Required.
-        public string username = null;  // Optional (null)
-        public string email = null;     // Optional (null)
-        public string password = null;  // Optional (null)
-        public string firstname = null; // Optional (null)
-        public string lastname = null;  // Optional (null)
-        public bool? active = null;     // Optional (null)
-        public bool? admin = null;      // Optional (null)
-        public string ldap_dn = null;   // Optional (null)
-    }
-
-    /// <summary>
+   /// <summary>
     /// Data structure used by:
     ///
     /// get_user
